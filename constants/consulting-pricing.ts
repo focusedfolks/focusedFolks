@@ -1,0 +1,173 @@
+import type { InrPricingAddon, InrPricingComparisonRow, InrPricingPlan } from "@/types/inr-pricing";
+
+/** IT consulting service packages — all amounts stored in INR (source of truth). */
+export const consultingPricingPlans: InrPricingPlan[] = [
+  {
+    id: "starter-consulting",
+    name: "Starter Consulting Package",
+    price: { type: "range", minInr: 19999, maxInr: 49999 },
+    suitableFor: "Startups, Small Businesses, Technology Planning, Initial Digital Transformation",
+    features: [
+      "IT Consultation Session",
+      "Technology Assessment",
+      "Current System Review",
+      "Architecture Review",
+      "Technology Recommendations",
+      "Cloud Readiness Assessment",
+      "Basic Security Assessment",
+      "Infrastructure Review",
+      "Roadmap Document",
+      "Vendor Recommendations",
+      "Executive Summary Report",
+      "Q&A Session",
+      "1 Revision Round",
+      "Delivery: 1–2 Weeks",
+    ],
+  },
+  {
+    id: "business-consulting",
+    name: "Business Consulting Package",
+    price: { type: "range", minInr: 74999, maxInr: 199999 },
+    suitableFor: "Growing Businesses, Manufacturing Companies, SaaS Platforms, Mid-Sized Enterprises",
+    popular: true,
+    features: [
+      "Everything in Starter Package",
+      "Enterprise Architecture Review",
+      "Application Modernization Strategy",
+      "Cloud Strategy & Migration Roadmap",
+      "Vendor Evaluation & Selection",
+      "Technology Stack Assessment",
+      "Cost Optimization Strategy",
+      "Infrastructure Audit",
+      "Security Best Practices Review",
+      "Scalability Assessment",
+      "Governance Framework",
+      "Digital Transformation Roadmap",
+      "Risk Assessment",
+      "Executive Presentation",
+      "Detailed Documentation",
+      "3 Revision Rounds",
+      "Delivery: 2–6 Weeks",
+    ],
+  },
+  {
+    id: "enterprise-consulting",
+    name: "Enterprise Consulting Package",
+    price: { type: "from", minInr: 299999 },
+    suitableFor:
+      "Large Enterprises, Government Organizations, Financial Institutions, Enterprise Digital Transformation",
+    features: [
+      "Enterprise IT Strategy",
+      "Architecture Governance",
+      "Enterprise Architecture Audit",
+      "Technology Modernization Roadmap",
+      "Cloud Transformation Strategy",
+      "Multi-Vendor Evaluation",
+      "Solution Architecture Design",
+      "IT Governance Framework",
+      "Security & Compliance Strategy",
+      "Disaster Recovery Strategy",
+      "Cost Optimization & FinOps Advisory",
+      "Enterprise Risk Assessment",
+      "Technology Procurement Advisory",
+      "Executive Workshops",
+      "Leadership Presentations",
+      "Enterprise Documentation",
+      "Priority Consulting Support",
+      "Unlimited Revisions*",
+      "Delivery Based On Scope",
+    ],
+  },
+];
+
+export const consultingPricingAddons: InrPricingAddon[] = [
+  {
+    id: "ea-audit",
+    name: "Enterprise Architecture Audit",
+    price: { type: "single_plus", minInr: 50000 },
+  },
+  {
+    id: "cloud-readiness",
+    name: "Cloud Readiness Assessment",
+    price: { type: "single_plus", minInr: 30000 },
+  },
+  {
+    id: "tech-roadmap",
+    name: "Technology Roadmap Development",
+    price: { type: "single_plus", minInr: 35000 },
+  },
+  {
+    id: "vendor-selection",
+    name: "Vendor Selection Assistance",
+    price: { type: "single_plus", minInr: 40000 },
+  },
+  {
+    id: "infra-audit",
+    name: "Infrastructure Audit",
+    price: { type: "single_plus", minInr: 30000 },
+  },
+  {
+    id: "security-assessment",
+    name: "Security Assessment",
+    price: { type: "single_plus", minInr: 35000 },
+  },
+  {
+    id: "dx-workshop",
+    name: "Digital Transformation Workshop",
+    price: { type: "single_plus", minInr: 50000 },
+  },
+  {
+    id: "cto-advisory",
+    name: "CTO Advisory Services",
+    price: { type: "single_plus", minInr: 75000 },
+  },
+  {
+    id: "due-diligence",
+    name: "Technology Due Diligence",
+    price: { type: "single_plus", minInr: 60000 },
+  },
+  {
+    id: "governance-framework",
+    name: "IT Governance Framework",
+    price: { type: "single_plus", minInr: 45000 },
+  },
+  {
+    id: "compliance-assessment",
+    name: "Compliance Assessment",
+    price: { type: "single_plus", minInr: 40000 },
+  },
+  {
+    id: "exec-workshop",
+    name: "Executive Strategy Workshop",
+    price: { type: "single_plus", minInr: 75000 },
+  },
+  {
+    id: "monthly-advisory",
+    name: "Monthly IT Advisory",
+    price: { type: "per_month", minInr: 50000 },
+  },
+  {
+    id: "fractional-cto",
+    name: "Fractional CTO Services",
+    price: { type: "custom_quote" },
+  },
+];
+
+export const consultingPricingComparison: InrPricingComparisonRow[] = [
+  { name: "Architecture Review", starter: true, business: true, enterprise: true },
+  { name: "Technology Roadmap", starter: "Basic", business: "Advanced", enterprise: "Enterprise" },
+  { name: "Vendor Selection", starter: "Basic", business: true, enterprise: true },
+  { name: "Governance Framework", starter: "✗", business: true, enterprise: true },
+  { name: "Cloud Strategy", starter: "Basic", business: true, enterprise: true },
+  { name: "Security Assessment", starter: "Basic", business: "Advanced", enterprise: "Enterprise" },
+  { name: "Infrastructure Audit", starter: "Basic", business: "Advanced", enterprise: "Enterprise" },
+  { name: "Executive Workshops", starter: "✗", business: "Basic", enterprise: true },
+  { name: "Documentation", starter: "Basic", business: "Advanced", enterprise: "Enterprise" },
+  { name: "Support", starter: "15 Days", business: "30 Days", enterprise: "90 Days" },
+  {
+    name: "Price",
+    starter: { type: "from_plus", minInr: 19999 },
+    business: { type: "from_plus", minInr: 74999 },
+    enterprise: { type: "from_plus", minInr: 299999 },
+  },
+];
