@@ -10,17 +10,18 @@ export function generateMetadata(): Metadata {
   return createMetadata({
     title: "Pricing",
     description:
-      "Transparent IT services pricing for 2026: 10 services with Essential, Professional, and Custom Quote tiers. Web from $875, mobile from $2,500, staff augmentation from $1,000/mo. Regional currency display for US, UAE, India, UK, and more.",
+      "FocusedFolks pricing: website development, custom software, e-commerce, UI/UX design, cloud hosting, DevOps, AI integration, staff augmentation, IT consulting, and digital transformation. Transparent INR pricing with USD and AED conversion.",
     keywords: [
-      "software development pricing 2026",
-      "web development cost India",
-      "mobile app development price Dubai",
-      "UI UX design pricing",
-      "cloud migration cost AWS",
-      "DevOps services pricing",
-      "AI integration cost",
-      "IT services rates Ahmedabad",
+      "web development pricing India",
       "custom software development cost",
+      "ecommerce development pricing",
+      "AI chatbot development cost",
+      "staff augmentation rates India",
+      "UI UX design pricing",
+      "DevOps services pricing",
+      "IT consulting rates India",
+      "digital transformation cost",
+      "FocusedFolks pricing",
     ],
     path: "/pricing",
   });

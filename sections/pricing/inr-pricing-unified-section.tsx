@@ -64,11 +64,11 @@ export function InrPricingUnifiedSection() {
                 Pricing / Plans
               </div>
               <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                Packages for every service
+                Our Pricing
               </h2>
               <p className="mt-4 text-slate-300">
-                Select a service area to view plans and add-ons. All prices are stored in INR—switch
-                currency to see converted USD or AED estimates.
+                Select a service category to view fixed-scope pricing. All prices are stored in
+                INR—switch currency to see converted USD or AED estimates.
               </p>
             </div>
 
@@ -152,7 +152,11 @@ export function InrPricingUnifiedSection() {
                 currency={currency}
                 rates={rates}
                 plans={activeTab.plans}
+                plansHeading={activeTab.plansHeading}
+                secondaryPlans={activeTab.secondaryPlans}
+                secondaryPlansHeading={activeTab.secondaryPlansHeading}
                 addons={activeTab.addons}
+                addonsTitle={activeTab.addonsTitle}
                 tabId={activeTab.id}
                 comparison={activeTab.comparison}
               />

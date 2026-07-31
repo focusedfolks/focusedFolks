@@ -24,7 +24,11 @@ type InrPricingTabPanelProps = {
   currency: InrCurrency;
   rates: InrExchangeRates;
   plans: InrPricingPlan[];
+  plansHeading?: string;
+  secondaryPlans?: InrPricingPlan[];
+  secondaryPlansHeading?: string;
   addons: InrPricingAddon[];
+  addonsTitle?: string;
   tabId?: string;
   comparison?: {
     title: string;
@@ -36,57 +40,109 @@ type InrPricingTabPanelProps = {
   };
 };
 
+function PlansGrid({
+  plans,
+  currency,
+  rates,
+  tabId,
+  className,
+}: {
+  plans: InrPricingPlan[];
+  currency: InrCurrency;
+  rates: InrExchangeRates;
+  tabId?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "inr-pricing-plans-grid grid gap-5 sm:gap-6 lg:grid-cols-3 lg:gap-5",
+        tabId === "transformation" && "inr-pricing-plans-transformation",
+        className
+      )}
+    >
+      {plans.map((plan, index) => (
+        <InrPricingPlanCard
+          key={plan.id}
+          plan={plan}
+          index={index}
+          total={plans.length}
+          currency={currency}
+          rates={rates}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function InrPricingTabPanel({
   currency,
   rates,
   plans,
+  plansHeading,
+  secondaryPlans,
+  secondaryPlansHeading,
   addons,
+  addonsTitle = "Add-ons",
   tabId,
   comparison,
 }: InrPricingTabPanelProps) {
   return (
     <>
-      <div
-        className={cn(
-          "inr-pricing-plans-grid mt-10 grid gap-5 sm:gap-6 lg:grid-cols-3 lg:gap-5",
-          tabId === "transformation" && "inr-pricing-plans-transformation"
-        )}
-      >
-        {plans.map((plan, index) => (
-          <InrPricingPlanCard
-            key={plan.id}
-            plan={plan}
-            index={index}
-            total={plans.length}
+      {plansHeading && (
+        <h4 className="mt-10 text-lg font-bold tracking-tight text-white sm:text-xl">{plansHeading}</h4>
+      )}
+
+      <PlansGrid
+        plans={plans}
+        currency={currency}
+        rates={rates}
+        tabId={tabId}
+        className={plansHeading ? "mt-5" : "mt-10"}
+      />
+
+      {secondaryPlans && secondaryPlans.length > 0 && (
+        <>
+          {secondaryPlansHeading && (
+            <h4 className="mt-12 text-lg font-bold tracking-tight text-white sm:text-xl">
+              {secondaryPlansHeading}
+            </h4>
+          )}
+          <PlansGrid
+            plans={secondaryPlans}
             currency={currency}
             rates={rates}
+            tabId={tabId}
+            className={secondaryPlansHeading ? "mt-5" : "mt-10"}
           />
-        ))}
-      </div>
+        </>
+      )}
 
-      <div
-        className={cn(
-          "inr-pricing-addons-section mt-12",
-          tabId === "transformation" && "inr-pricing-addons-transformation"
-        )}
-      >
-        <div className="inr-pricing-addons-header mb-6">
-          <div className="inr-pricing-addons-icon" aria-hidden>
-            <Layers className="h-5 w-5" />
+      {addons.length > 0 && (
+        <div
+          className={cn(
+            "inr-pricing-addons-section mt-12",
+            tabId === "transformation" && "inr-pricing-addons-transformation"
+          )}
+        >
+          <div className="inr-pricing-addons-header mb-6">
+            <div className="inr-pricing-addons-icon" aria-hidden>
+              <Layers className="h-5 w-5" />
+            </div>
+            <h3 className="inr-pricing-addons-title">{addonsTitle}</h3>
           </div>
-          <h3 className="inr-pricing-addons-title">Add-ons</h3>
+          <ul className="inr-pricing-addons-grid mt-6" aria-live="polite">
+            {addons.map((addon) => (
+              <InrPricingAddonCard
+                key={addon.id}
+                addon={addon}
+                currency={currency}
+                rates={rates}
+              />
+            ))}
+          </ul>
         </div>
-        <ul className="inr-pricing-addons-grid mt-6" aria-live="polite">
-          {addons.map((addon) => (
-            <InrPricingAddonCard
-              key={addon.id}
-              addon={addon}
-              currency={currency}
-              rates={rates}
-            />
-          ))}
-        </ul>
-      </div>
+      )}
 
       {comparison && (
         <InrPricingComparisonTable
