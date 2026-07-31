@@ -64,6 +64,8 @@ export function formatInrPrice(
       return `${formatConvertedAmount(spec.minInr, currency, rates)}/page`;
     case "per_screen":
       return `${formatConvertedAmount(spec.minInr, currency, rates)}/screen`;
+    case "per_hour":
+      return `${formatConvertedAmount(spec.minInr, currency, rates)}/hour`;
     case "per_month":
       return `${formatConvertedAmount(spec.minInr, currency, rates)}/month`;
     case "per_month_plus":
@@ -78,7 +80,7 @@ export function formatInrPrice(
     case "from_plus_per_month":
       return `${formatConvertedAmount(spec.minInr, currency, rates)}+ / Month`;
     case "custom_quote":
-      return "Custom Quote";
+      return "Contact for Quote";
     default:
       return "";
   }

@@ -11,6 +11,7 @@ export type InrPriceSpec =
   | { type: "per_year"; minInr: number }
   | { type: "per_page"; minInr: number }
   | { type: "per_screen"; minInr: number }
+  | { type: "per_hour"; minInr: number }
   | { type: "per_month"; minInr: number }
   | { type: "per_month_plus"; minInr: number }
   | { type: "range_per_month"; minInr: number; maxInr: number }
@@ -22,8 +23,12 @@ export type InrPricingPlan = {
   id: string;
   name: string;
   price: InrPriceSpec;
+  /** Short scope / description for B2B catalogue cards. */
+  scope?: string;
+  /** Delivery timeline label (e.g. "5-7 Days"). */
+  delivery?: string;
   suitableFor?: string;
-  features: string[];
+  features?: string[];
   popular?: boolean;
 };
 
