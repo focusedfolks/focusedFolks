@@ -37,6 +37,7 @@ export function InrPricingPlanCard({
 }: InrPricingPlanCardProps) {
   const tier = resolvePlanTier(plan, index, total);
   const TierIcon = tierIcon[tier];
+  const features = plan.features ?? [];
 
   return (
     <article
@@ -96,7 +97,7 @@ export function InrPricingPlanCard({
       <div className="inr-pricing-plan-divider my-6" aria-hidden />
 
       <ul className="flex-1 space-y-3 text-sm text-slate-300">
-        {plan.features.map((feature) => (
+        {features.map((feature) => (
           <li key={feature} className="flex items-start gap-2.5">
             <span
               className={cn(

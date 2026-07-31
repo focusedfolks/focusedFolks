@@ -240,7 +240,7 @@ export function PricingInteractive() {
                   </div>
 
                   <ul className="mt-6 space-y-3 text-sm text-slate-300">
-                    {plan.features.map((f) => (
+                    {(plan.features ?? []).map((f) => (
                       <li key={f} className="flex items-start gap-2">
                         <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-cyan-300" />
                         <span>{f}</span>

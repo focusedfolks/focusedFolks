@@ -95,7 +95,7 @@ export function WebsitePricingSection() {
                 </div>
 
                 <ul className="mt-6 flex-1 space-y-3 text-sm text-slate-300">
-                  {plan.features.map((feature) => (
+                  {(plan.features ?? []).map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
                       <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-cyan-300" />
                       <span>{feature}</span>
