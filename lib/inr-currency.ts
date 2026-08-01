@@ -73,7 +73,7 @@ export function formatInrPrice(
     case "range_per_month": {
       const min = formatConvertedAmount(spec.minInr, currency, rates);
       const max = formatConvertedAmount(spec.maxInr, currency, rates);
-      return `${min} – ${max} / Month`;
+      return `${min} – ${max}/month`;
     }
     case "from_per_month":
       return `Starting From ${formatConvertedAmount(spec.minInr, currency, rates)} / Month`;

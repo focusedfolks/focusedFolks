@@ -1,15 +1,26 @@
 // constants/pricing-packages.ts
 
+export type PricingAmount =
+  | number
+  | "Contact"
+  | { min: number; max: number; unit?: "month" | "hour" };
+
 export interface PricingPlan {
   id: string;
   name: string;
   badge?: string;
   popular?: boolean;
-  priceINR: number | "Contact";
+  priceINR: PricingAmount;
   scope: string;
   delivery: string;
   description: string;
   features: string[];
+}
+
+export interface PricingAddonItem {
+  id: string;
+  name: string;
+  priceINR: { min: number; max: number };
 }
 
 export interface ServiceCategoryPackage {
@@ -17,6 +28,9 @@ export interface ServiceCategoryPackage {
   categoryName: string;
   tagline: string;
   plans: PricingPlan[];
+  /** Optional lightweight add-on strip (e.g. API Integrations). */
+  addons?: PricingAddonItem[];
+  addonsTitle?: string;
 }
 
 export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
@@ -30,7 +44,7 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
         id: "web-landing",
         name: "Landing Page",
         badge: "Essential",
-        priceINR: 10000,
+        priceINR: { min: 10000, max: 12000 },
         scope: "1 Responsive Page",
         delivery: "2-3 Days",
         description: "Perfect for single product launches, lead capture, and quick promos.",
@@ -47,8 +61,8 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
         name: "Static Website (5 Pages)",
         popular: true,
         badge: "Most Popular",
-        priceINR: 17500,
-        scope: "Home, About, Services, Portfolio, Contact",
+        priceINR: { min: 17500, max: 20000 },
+        scope: "Home, About, Services, Contact",
         delivery: "5-7 Days",
         description: "Ideal for small businesses and growing brands looking for a professional footprint.",
         features: [
@@ -63,7 +77,7 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
         id: "web-corporate",
         name: "Corporate CMS Website",
         badge: "Enterprise",
-        priceINR: 40000,
+        priceINR: { min: 40000, max: 45000 },
         scope: "10-20 Pages + CMS Admin",
         delivery: "10-15 Days",
         description: "Full corporate portal with custom content management and scalable architecture.",
@@ -86,18 +100,19 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
     plans: [
       {
         id: "sw-admin-panel",
-        name: "Admin Panel / Dashboard",
+        name: "Admin Panel",
         badge: "Starter",
-        priceINR: 32500,
-        scope: "Authentication + Interactive Dashboard",
+        priceINR: { min: 32500, max: 35000 },
+        scope: "Authentication + Dashboard",
         delivery: "10-15 Days",
-        description: "Centralized control center for monitoring workflows and user permissions.",
+        description:
+          "A secure, custom-built admin panel to manage your business operations from one dashboard.",
         features: [
-          "Role-Based Access Control (RBAC)",
-          "Data Analytics Cards & Charts",
-          "CRUD Operations Management",
-          "REST API Integration",
-          "Responsive Dark/Light Mode UI",
+          "Role-Based Authentication & Access Control",
+          "Custom Dashboard with Real-Time Data",
+          "CRUD Operations for All Modules",
+          "Responsive Admin UI",
+          "30 Days Post-Launch Support",
         ],
       },
       {
@@ -105,38 +120,72 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
         name: "CRM System",
         popular: true,
         badge: "Best Value",
-        priceINR: 90000,
-        scope: "Lead & Customer Management Suite",
+        priceINR: { min: 90000, max: 100000 },
+        scope: "Lead & Customer Management",
         delivery: "25-35 Days",
-        description: "Streamline sales pipelines, client communication, and team management.",
+        description: "A dedicated CRM to track leads, manage customers, and close deals faster.",
         features: [
-          "Pipeline & Lead Tracking",
-          "Client Portal & Interaction Log",
-          "Automated Email & WhatsApp Notifications",
+          "Lead Capture & Pipeline Tracking",
+          "Customer Interaction History",
+          "Automated Follow-Up Reminders",
           "Custom Reports & Analytics",
-          "Third-Party Tool Integrations",
+          "Team Access with Role Permissions",
         ],
       },
       {
         id: "sw-erp-enterprise",
-        name: "Full ERP System",
+        name: "ERP System",
         badge: "Enterprise",
-        priceINR: 225000,
-        scope: "Multi-Module Enterprise System",
+        priceINR: { min: 225000, max: 250000 },
+        scope: "Enterprise Modules",
         delivery: "45-60 Days",
-        description: "End-to-end organizational software uniting inventory, HR, accounting & operations.",
+        description:
+          "A full enterprise resource planning system built around how your business actually runs.",
         features: [
-          "Multi-Department Modules",
-          "Custom Workflows & Approvals",
-          "Invoicing & Financial Tracking",
-          "Role Security & Audit Logs",
-          "Dedicated Deployment & SLA",
+          "Custom Modules (Finance, HR, Inventory & More)",
+          "Centralized Data Across Departments",
+          "Role-Based Access & Audit Trails",
+          "Scalable Architecture for Growth",
+          "Dedicated Onboarding & Training",
         ],
+      },
+    ],
+    addonsTitle: "Add-on API Integrations",
+    addons: [
+      {
+        id: "api-payment",
+        name: "Payment Gateway (Razorpay/Stripe/etc.)",
+        priceINR: { min: 12500, max: 15000 },
+      },
+      {
+        id: "api-sms",
+        name: "SMS API (OTP & Messaging)",
+        priceINR: { min: 6500, max: 8000 },
+      },
+      {
+        id: "api-whatsapp",
+        name: "WhatsApp Business API",
+        priceINR: { min: 16000, max: 17000 },
+      },
+      {
+        id: "api-shipping",
+        name: "Shipping API",
+        priceINR: { min: 19500, max: 24000 },
+      },
+      {
+        id: "api-crm",
+        name: "CRM API",
+        priceINR: { min: 25000, max: 30000 },
+      },
+      {
+        id: "api-third-party",
+        name: "Third-Party API (custom)",
+        priceINR: { min: 32500, max: 35000 },
       },
     ],
   },
 
-  // 3. MOBILE & E-COMMERCE APPS
+  // 3. MOBILE & E-COMMERCE
   {
     id: "mobile-ecommerce",
     categoryName: "Mobile & E-Commerce",
@@ -146,55 +195,57 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
         id: "ecom-shopify",
         name: "Shopify Store Setup",
         badge: "Turnkey",
-        priceINR: 37500,
-        scope: "Theme + Product Upload",
+        priceINR: { min: 37500, max: 40000 },
+        scope: "Theme + Products",
         delivery: "7-10 Days",
-        description: "Get selling fast with an optimized Shopify store configuration.",
+        description: "A ready-to-sell Shopify store, set up and configured for your products.",
         features: [
-          "Theme Customization & Setup",
-          "Up to 30 Product Uploads",
-          "Payment Gateway & Shipping Setup",
-          "Mobile-Optimized Cart & Checkout",
-          "Basic Staff Training",
+          "Premium Theme Setup & Customization",
+          "Product Upload & Catalog Setup",
+          "Payment Gateway Integration",
+          "Mobile-Optimized Checkout",
+          "Basic SEO Configuration",
         ],
       },
       {
         id: "ecom-woocommerce-adv",
-        name: "Advanced E-Commerce Store",
+        name: "WooCommerce (100-500 Products)",
         popular: true,
         badge: "Recommended",
-        priceINR: 69999,
-        scope: "WooCommerce (100-500 Products)",
+        priceINR: { min: 69000, max: 80000 },
+        scope: "Advanced Store",
         delivery: "15-20 Days",
-        description: "Scalable custom online store with zero recurring platform fees.",
+        description:
+          "A full-featured WooCommerce store built to handle a growing product catalog.",
         features: [
-          "Up to 500 Product Catalog Support",
-          "Custom Category & Filter Options",
-          "Coupon & Discount Engine",
-          "Automated Inventory Management",
-          "Payment Gateway Integration",
+          "Bulk Product Upload (100-500 SKUs)",
+          "Advanced Filtering & Search",
+          "Multiple Payment & Shipping Options",
+          "Inventory & Order Management",
+          "Speed-Optimized for Scale",
         ],
       },
       {
         id: "ecom-multivendor",
-        name: "Multi-Vendor Marketplace",
+        name: "Multi-Vendor Ecommerce",
         badge: "Scale",
-        priceINR: 160000,
-        scope: "Complete Multi-Vendor Solution",
+        priceINR: { min: 160000, max: 180000 },
+        scope: "Complete Solution",
         delivery: "30-45 Days",
-        description: "Amazon/Flipkart-style marketplace allowing third-party sellers.",
+        description:
+          "A complete multi-vendor marketplace platform for multiple sellers under one roof.",
         features: [
-          "Separate Vendor Admin Dashboards",
+          "Vendor Registration & Dashboards",
           "Commission & Payout Management",
-          "Vendor Storefront Customization",
-          "Order & Logistics Distribution",
-          "Advanced Analytics & Admin Control",
+          "Centralized Order & Inventory Control",
+          "Multi-Vendor Product Listings",
+          "Admin Panel for Full Marketplace Control",
         ],
       },
     ],
   },
 
-  // 4. UI/UX DESIGN SERVICES
+  // 4. UI/UX DESIGN SERVICES — untouched
   {
     id: "uiux-design",
     categoryName: "UI/UX Design Services",
@@ -235,7 +286,7 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
     ],
   },
 
-  // 5. CLOUD SOLUTIONS & INFRASTRUCTURE
+  // 5. CLOUD — untouched
   {
     id: "cloud-infrastructure",
     categoryName: "Cloud & Infrastructure",
@@ -290,7 +341,7 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
     ],
   },
 
-  // 6. DEVOPS & DEPLOYMENT
+  // 6. DEVOPS — untouched
   {
     id: "devops-deployment",
     categoryName: "DevOps & Deployment",
@@ -330,7 +381,7 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
     ],
   },
 
-  // 7. AI INTEGRATION
+  // 7. AI DEVELOPMENT & SOLUTIONS
   {
     id: "ai-integration",
     categoryName: "AI Development & Solutions",
@@ -338,48 +389,54 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
     plans: [
       {
         id: "ai-api-integration",
-        name: "OpenAI / Gemini API Setup",
+        name: "OpenAI / Gemini Integration",
         badge: "Starter",
-        priceINR: 22500,
-        scope: "API Integration to Existing App",
+        priceINR: { min: 22500, max: 25000 },
+        scope: "API Integration",
         delivery: "3-5 Days",
-        description: "Embed LLM capabilities into your current software or website.",
+        description:
+          "Add AI capabilities to your existing product with a clean OpenAI or Gemini API integration.",
         features: [
-          "OpenAI / Gemini API Connection",
-          "Prompt Engineering Setup",
-          "Content Generation / Summarization",
-          "Token Usage Rate Limiting",
+          "API Setup & Authentication",
+          "Custom Prompt Engineering",
+          "Response Handling & Error Fallbacks",
+          "Usage & Cost Monitoring Setup",
+          "Documentation for Your Team",
         ],
       },
       {
         id: "ai-custom-chatbot",
-        name: "Custom AI Chatbot",
+        name: "AI Chatbot",
         popular: true,
         badge: "Best Seller",
-        priceINR: 57500,
-        scope: "Website & App Intelligent Chatbot",
+        priceINR: { min: 57500, max: 70000 },
+        scope: "Custom Chatbot",
         delivery: "10-15 Days",
-        description: "Interactive chatbot trained on custom business rules and lead funnels.",
+        description:
+          "A custom AI chatbot trained on your business, ready to handle customer queries 24/7.",
         features: [
-          "Custom Conversational Flows",
-          "Lead Capture & CRM Handoff",
-          "Multi-Language Support",
-          "Web Widget & Mobile Responsive",
+          "Trained on Your Business Data",
+          "Website & WhatsApp Deployment",
+          "Custom Conversation Flows",
+          "Lead Capture Within Chat",
+          "Analytics Dashboard",
         ],
       },
       {
-        id: "ai-rag-knowledge",
-        name: "RAG AI Knowledge Base",
+        id: "ai-voice-assistant",
+        name: "AI Voice Assistant",
         badge: "Advanced",
-        priceINR: 105000,
-        scope: "Trained on Private Business Data",
-        delivery: "20-30 Days",
-        description: "Train an AI engine on your company PDF documents, manuals, and databases.",
+        priceINR: { min: 165000, max: 180000 },
+        scope: "Voice AI",
+        delivery: "30-45 Days",
+        description:
+          "A voice-enabled AI assistant for calls, support, or in-product voice interaction.",
         features: [
-          "Vector Database (Pinecone/Qdrant) Setup",
-          "Private PDF / Document Embeddings",
-          "Hallucination-Free Fact-Based Responses",
-          "Admin Portal to Update Knowledge Base",
+          "Natural Language Voice Processing",
+          "Custom Voice & Persona",
+          "Call Handling / IVR Integration",
+          "Real-Time Response Generation",
+          "Ongoing Model Fine-Tuning",
         ],
       },
     ],
@@ -392,55 +449,61 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
     tagline: "Hire pre-vetted, full-time or hourly software engineers.",
     plans: [
       {
-        id: "staff-mid-dev",
-        name: "Mid-Level Developer",
-        badge: "Hourly or Monthly",
-        priceINR: 140000,
-        scope: "160 Hours / Month",
-        delivery: "Immediate Onboarding",
-        description: "Experienced mid-tier developer for ongoing product feature velocity.",
+        id: "staff-junior-dev",
+        name: "Junior Developer (Dedicated)",
+        badge: "Monthly",
+        priceINR: { min: 90000, max: 100000, unit: "month" },
+        scope: "Full-Time Dedicated Resource",
+        delivery: "—",
+        description:
+          "A dedicated junior developer working exclusively on your project, full-time.",
         features: [
-          "React / Next.js / Node.js Expertise",
-          "Full 40 Hours/Week Commitment",
-          "Direct Slack / Teams Integration",
-          "Daily Progress Reporting",
+          "Full-Time Dedicated Resource",
+          "Direct Communication Access",
+          "Weekly Progress Reports",
+          "No Recruitment Overhead",
+          "Flexible Monthly Contract",
+        ],
+      },
+      {
+        id: "staff-mid-dev",
+        name: "Mid-Level Developer (Dedicated)",
+        popular: true,
+        badge: "Most Demanded",
+        priceINR: { min: 140000, max: 150000, unit: "month" },
+        scope: "Full-Time Dedicated Resource",
+        delivery: "—",
+        description:
+          "An experienced mid-level developer embedded in your team, full-time.",
+        features: [
+          "3-5 Years of Hands-On Experience",
+          "Full-Time Dedicated Resource",
+          "Direct Communication Access",
+          "Sprint-Based Delivery",
+          "Flexible Monthly Contract",
         ],
       },
       {
         id: "staff-senior-dev",
-        name: "Senior Full Stack Dev",
-        popular: true,
-        badge: "Most Demanded",
-        priceINR: 240000,
-        scope: "160 Hours / Month",
-        delivery: "Immediate Onboarding",
-        description: "Lead-level developer equipped to build complex architectures independently.",
+        name: "Senior Full Stack Developer (Dedicated)",
+        badge: "Senior",
+        priceINR: { min: 240000, max: 260000, unit: "month" },
+        scope: "Full-Time Dedicated Resource",
+        delivery: "—",
+        description:
+          "A senior full-stack developer to lead technical execution on your project.",
         features: [
-          "Full Stack Architecture Expertise",
-          "Code Reviews & System Security",
-          "Database Optimization & APIs",
-          "Daily Standups & Direct Management",
-        ],
-      },
-      {
-        id: "staff-ai-engineer",
-        name: "Dedicated AI Engineer",
-        badge: "Specialized",
-        priceINR: 297500,
-        scope: "160 Hours / Month",
-        delivery: "3-5 Days Onboarding",
-        description: "Specialized AI/ML developer focused on LLMs, Fine-tuning & RAG systems.",
-        features: [
-          "Python, PyTorch, LangChain & LlamaIndex",
-          "Vector DB & Model Deployment",
-          "Private LLM Optimization",
-          "Dedicated Full-Time Resource",
+          "5+ Years of Full-Stack Experience",
+          "Architecture & Technical Decision-Making",
+          "Full-Time Dedicated Resource",
+          "Direct Communication Access",
+          "Flexible Monthly Contract",
         ],
       },
     ],
   },
 
-  // 9. IT CONSULTING
+  // 9. IT CONSULTING — untouched
   {
     id: "it-consulting",
     categoryName: "IT Consulting",
@@ -480,41 +543,62 @@ export const PRICING_PACKAGES: ServiceCategoryPackage[] = [
     ],
   },
 
-  // 10. DIGITAL TRANSFORMATION
+  // 10. DIGITAL TRANSFORMATION (Digital Marketing services)
   {
     id: "digital-transformation",
     categoryName: "Digital Transformation",
     tagline: "Complete overhaul of offline business workflows into digital platforms.",
     plans: [
       {
-        id: "dt-starter",
-        name: "Digitization Package",
+        id: "dt-social-media",
+        name: "Social Media Management",
         badge: "Growth",
-        priceINR: 90000,
-        scope: "Web Portal + Custom Dashboard",
-        delivery: "20-25 Days",
-        description: "Digitize manual pen-and-paper operations into a modern cloud app.",
+        priceINR: { min: 10000, max: 12000, unit: "month" },
+        scope: "12 Posts + 12 Stories + Caption + Design",
+        delivery: "Monthly",
+        description:
+          "Consistent, on-brand social media management so your presence never goes quiet.",
         features: [
-          "Custom Web Portal for Clients",
-          "Internal Staff Admin Panel",
-          "Digital Document & Record Storage",
-          "Automated WhatsApp / Email Alerts",
+          "12 Posts + 12 Stories Monthly",
+          "Custom Graphic Design",
+          "Caption Writing & Hashtag Research",
+          "Content Calendar Planning",
+          "Monthly Performance Summary",
         ],
       },
       {
-        id: "dt-enterprise",
-        name: "Complete Ecosystem Overhaul",
+        id: "dt-advanced-seo",
+        name: "Advanced SEO",
         popular: true,
-        badge: "Transformative",
-        priceINR: 350000,
-        scope: "Custom ERP + Web App + AI Workflow",
-        delivery: "60-90 Days",
-        description: "Comprehensive end-to-end automation of enterprise operations.",
+        badge: "Recommended",
+        priceINR: { min: 20000, max: 25000, unit: "month" },
+        scope: "20 Keywords + Technical SEO + Link Building",
+        delivery: "Monthly",
+        description:
+          "Technical and on-page SEO to move your rankings and organic traffic upward.",
         features: [
-          "Custom Multi-Platform System (Web & Mobile)",
-          "Legacy Data Migration",
-          "Automated AI Workflows & Reporting",
-          "Staff Training & 6 Months Support SLA",
+          "Up to 20 Target Keywords",
+          "Technical SEO Audit & Fixes",
+          "On-Page Optimization",
+          "Link Building Campaign",
+          "Monthly Ranking Reports",
+        ],
+      },
+      {
+        id: "dt-ads-mgmt",
+        name: "Monthly Ads Management (₹50K–₹2L Spend)",
+        badge: "Performance",
+        priceINR: { min: 20000, max: 22000, unit: "month" },
+        scope: "Advanced Optimization + A/B Testing",
+        delivery: "Monthly",
+        description:
+          "Hands-on management of your Google & Meta ad campaigns to maximize ROI.",
+        features: [
+          "Campaign Setup & Optimization",
+          "A/B Testing on Creatives & Copy",
+          "Budget & Bid Management",
+          "Weekly Performance Reports",
+          "Google + Meta Ads Coverage",
         ],
       },
     ],
