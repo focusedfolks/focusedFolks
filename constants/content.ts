@@ -612,14 +612,6 @@ export const teamMembers: TeamMember[] = [
     image: "/images/team-1.jpeg",
   },
   {
-    id: "1",
-    name: "Romil Patel",
-    role: "Project Manager",
-    bio: "Founded FocusFolks in Ahmedabad after 12 years leading delivery at product studios across India and the GCC. Sets delivery standards, client partnerships, and regional expansion strategy. Coordinates sprint planning, roadmap alignment, and transparent client communication so every engagement moves from discovery to delivery with predictable momentum.",
-    image: "/images/team-1.png",
-    linkedin: "https://www.linkedin.com/in/romil-hingrajiya-8389151b5/",
-  },
-  {
     id: "3",
     name: "Taiyab",
     role: "Designer & Developer",
