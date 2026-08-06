@@ -8,11 +8,16 @@ Branch: `feature/admin-cms` — **do not merge to production** until the checkli
 |---|---|
 | Schema migration + RLS | Ready (`supabase/migrations/20260805000000_cms_schema.sql`) |
 | Admin auth (`/admin/login`) | Ready (needs Supabase Auth user) |
-| Pricing seed + public `/pricing` fetch | Ready (falls back to hardcoded if DB empty) |
-| Pricing admin CRUD | Ready |
-| Homepage / FAQs / Services / Blog / About / Contact editors | Homepage live (seed → admin CRUD → public `/`); others scaffold or admin-only |
-| Footer nav/social | **Staying hardcoded** (lower priority) |
-| Supabase Storage (`cms-media`) | Migration `20260806000000_cms_media_bucket.sql` — run in SQL Editor; upload UI on Homepage Team + Process |
+| Pricing seed + public `/pricing` fetch | **Live** |
+| Homepage (hero, Why Us, process, team, industries, stats) | **Live** |
+| FAQs (homepage + pricing + services + contact) | **Live** |
+| Services catalog + detail pages + featured home cards | **Live** |
+| Blog (published only on public) | **Live** |
+| Products | **Live** |
+| About (team + settings) | **Live** |
+| Contact + footer contact info (shared) | **Live** |
+| Footer nav/social | **Staying hardcoded** (by design) |
+| Supabase Storage (`cms-media`) | Migration `20260806000000_cms_media_bucket.sql` — run in SQL Editor |
 
 ## 1. Create a **dev** Supabase project
 
@@ -52,9 +57,14 @@ Admin Homepage → Team / Process (and later Blog) can upload via that bucket.
 
 - [ ] All 10 pricing tabs correct with ranges
 - [ ] Homepage sections match live (after those seeds)
-- [ ] Both FAQ sets correct
+- [ ] Both FAQ sets correct (homepage + pricing)
+- [ ] All 10 service pages + homepage featured cards
+- [ ] Blog list/detail show published posts only
+- [ ] Products / About / Contact match CMS; footer contact matches Contact
+- [ ] Dashboard shows **8/8** sections live with real counts
 - [ ] `/admin` blocked when logged out
 - [ ] Anon key cannot write
-- [ ] Admin price edit updates public page
+- [ ] Admin edits update public pages after revalidate / hard refresh
+- [ ] Image uploads work (team, process, blog covers) after `cms-media` migration
 - [ ] USD/AED switcher still works from INR lows/highs
 - [ ] Preview deploy verified before promoting production
