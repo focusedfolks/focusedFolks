@@ -8,15 +8,20 @@ import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { heroBannerSlides } from "@/constants/content";
+import type { HeroSlide } from "@/lib/cms/homepage";
 import { cn } from "@/lib/utils";
 
 /** Time each slide stays visible — tab fill and autoplay share this exact duration. */
 const SLIDE_INTERVAL_MS = 20_000;
 const SLIDE_INTERVAL_SEC = SLIDE_INTERVAL_MS / 1000;
 
-export function HeroSection() {
+export function HeroSection({ slides }: { slides?: HeroSlide[] }) {
   const prefersReducedMotion = useReducedMotion();
   const [activeSlide, setActiveSlide] = useState(0);
+  const safeSlides: HeroSlide[] =
+    slides && slides.length > 0
+      ? slides
+      : heroBannerSlides.map((s) => ({ ...s, ctaText: "Book Consultation" }));
 
   const goToSlide = useCallback((index: number) => {
     setActiveSlide(index);
@@ -24,23 +29,23 @@ export function HeroSection() {
 
   // Restart timer on every slide change so fill animation and advance stay in lockstep.
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || safeSlides.length <= 1) return;
     const id = window.setTimeout(() => {
-      setActiveSlide((current) => (current + 1) % heroBannerSlides.length);
+      setActiveSlide((current) => (current + 1) % safeSlides.length);
     }, SLIDE_INTERVAL_MS);
     return () => window.clearTimeout(id);
-  }, [activeSlide, prefersReducedMotion]);
+  }, [activeSlide, prefersReducedMotion, safeSlides.length]);
 
-  const slide = heroBannerSlides[activeSlide];
+  const slide = safeSlides[Math.min(activeSlide, safeSlides.length - 1)];
 
   return (
     <section className="relative w-full pt-16 lg:pt-20">
       <div className="relative min-h-[calc(100dvh-4rem)] w-full overflow-hidden lg:min-h-[calc(100dvh-5rem)]">
         {/* Background slideshow — full device width */}
         <div className="absolute inset-0" aria-hidden>
-          {heroBannerSlides.map((slide, idx) => (
+          {safeSlides.map((slideItem, idx) => (
             <motion.div
-              key={slide.image}
+              key={`${slideItem.image}-${idx}`}
               className="absolute inset-0"
               initial={false}
               animate={{ opacity: idx === activeSlide ? 1 : 0 }}
@@ -50,8 +55,8 @@ export function HeroSection() {
               }}
             >
               <Image
-                src={slide.image}
-                alt={slide.alt}
+                src={slideItem.image}
+                alt={slideItem.alt}
                 fill
                 priority={idx === 0}
                 sizes="100vw"
@@ -109,7 +114,7 @@ export function HeroSection() {
                     className="from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 shadow-blue-500/20 hover:scale-[1.03]"
                   >
                     <Link href="/contact">
-                      Book Consultation
+                      {slide.ctaText || "Book Consultation"}
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
@@ -125,9 +130,9 @@ export function HeroSection() {
           role="tablist"
           aria-label="Hero banner slides"
         >
-          {heroBannerSlides.map((slide, idx) => (
+          {safeSlides.map((slideItem, idx) => (
             <button
-              key={slide.image}
+              key={`${slideItem.image}-tab-${idx}`}
               type="button"
               role="tab"
               aria-selected={idx === activeSlide}

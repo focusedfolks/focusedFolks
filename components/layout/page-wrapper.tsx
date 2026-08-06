@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { GalaxyPageGate } from "@/components/layout/galaxy-page-gate";
@@ -9,6 +12,13 @@ import { WhatsAppFloat } from "@/components/shared/whatsapp-float";
 import { SiteLoader } from "@/components/shared/site-loader";
 
 export function PageWrapper({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
+
+  if (isAdmin) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <SiteLoader />

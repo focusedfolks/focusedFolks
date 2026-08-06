@@ -8,6 +8,7 @@ import {
   getInrPricingTabById,
   inrPricingTabs,
   INR_PRICING_TAB_STORAGE_KEY,
+  type InrPricingTabConfig,
 } from "@/constants/inr-pricing-tabs";
 import { InrPricingTabPanel } from "@/components/pricing/inr-pricing-section-layout";
 import { useWebsiteCurrency } from "@/hooks/use-website-currency";
@@ -21,28 +22,33 @@ const CURRENCY_OPTIONS: { value: InrCurrency; label: string }[] = [
   { value: "AED", label: "AED" },
 ];
 
-function readStoredTabId(): string {
-  if (typeof window === "undefined") return defaultInrPricingTabId;
+type InrPricingUnifiedSectionProps = {
+  tabs?: InrPricingTabConfig[];
+};
+
+function readStoredTabId(tabs: InrPricingTabConfig[]): string {
+  const fallback = tabs[0]?.id ?? defaultInrPricingTabId;
+  if (typeof window === "undefined") return fallback;
   try {
     const stored = localStorage.getItem(INR_PRICING_TAB_STORAGE_KEY);
-    if (stored && inrPricingTabs.some((tab) => tab.id === stored)) return stored;
+    if (stored && tabs.some((tab) => tab.id === stored)) return stored;
   } catch {
     /* ignore */
   }
-  return defaultInrPricingTabId;
+  return fallback;
 }
 
-export function InrPricingUnifiedSection() {
+export function InrPricingUnifiedSection({ tabs = inrPricingTabs }: InrPricingUnifiedSectionProps) {
   const { currency, setCurrency, rates, ratesLoading, ratesSource } = useWebsiteCurrency();
-  const [tabId, setTabId] = useState(defaultInrPricingTabId);
+  const [tabId, setTabId] = useState(tabs[0]?.id ?? defaultInrPricingTabId);
 
   useEffect(() => {
-    setTabId(readStoredTabId());
-  }, []);
+    setTabId(readStoredTabId(tabs));
+  }, [tabs]);
 
   const activeTab = useMemo(
-    () => getInrPricingTabById(tabId) ?? inrPricingTabs[0],
-    [tabId]
+    () => getInrPricingTabById(tabId, tabs) ?? tabs[0],
+    [tabId, tabs]
   );
 
   function handleTabChange(nextId: string) {
@@ -53,6 +59,8 @@ export function InrPricingUnifiedSection() {
       /* ignore */
     }
   }
+
+  if (!activeTab) return null;
 
   return (
     <section id="service-plans-pricing" className="border-t border-white/10 py-20 md:py-28">
@@ -108,7 +116,7 @@ export function InrPricingUnifiedSection() {
               role="tablist"
               aria-label="Service pricing"
             >
-              {inrPricingTabs.map((tab) => {
+              {tabs.map((tab) => {
                 const isActive = tabId === tab.id;
                 return (
                   <button

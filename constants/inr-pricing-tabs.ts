@@ -1,5 +1,9 @@
 ﻿import type { InrPricingAddon, InrPricingComparisonRow, InrPricingPlan, InrPriceSpec } from "@/types/inr-pricing";
-import { PRICING_PACKAGES, type PricingAmount } from "@/constants/pricing-packages";
+import {
+  PRICING_PACKAGES,
+  type PricingAmount,
+  type ServiceCategoryPackage,
+} from "@/constants/pricing-packages";
 
 export type InrPricingTabConfig = {
   id: string;
@@ -39,39 +43,47 @@ function toPriceSpec(priceINR: PricingAmount): InrPriceSpec {
   return { type: "range", minInr: priceINR.min, maxInr: priceINR.max };
 }
 
-/** Convert PRICING_PACKAGES to InrPricingTabConfig[] for the unified section. */
-export const inrPricingTabs: InrPricingTabConfig[] = PRICING_PACKAGES.map((cat) => ({
-  id: cat.id,
-  label: cat.categoryName,
-  badge: `${cat.categoryName} / Plans`,
-  title: cat.categoryName,
-  description: cat.tagline,
-  plans: cat.plans.map((plan) => ({
-    id: plan.id,
-    name: plan.name,
-    price: toPriceSpec(plan.priceINR),
-    scope: plan.scope,
-    delivery: plan.delivery,
-    suitableFor: plan.description,
-    features: plan.features,
-    popular: plan.popular,
-  })),
-  addons: (cat.addons ?? []).map((addon) => ({
-    id: addon.id,
-    name: addon.name,
-    price: {
-      type: "range" as const,
-      minInr: addon.priceINR.min,
-      maxInr: addon.priceINR.max,
-    },
-  })),
-  addonsTitle: cat.addonsTitle,
-}));
+/** Convert package arrays to InrPricingTabConfig[] for the unified section. */
+export function packagesToInrTabs(packages: ServiceCategoryPackage[]): InrPricingTabConfig[] {
+  return packages.map((cat) => ({
+    id: cat.id,
+    label: cat.categoryName,
+    badge: `${cat.categoryName} / Plans`,
+    title: cat.categoryName,
+    description: cat.tagline,
+    plans: cat.plans.map((plan) => ({
+      id: plan.id,
+      name: plan.name,
+      price: toPriceSpec(plan.priceINR),
+      scope: plan.scope,
+      delivery: plan.delivery,
+      suitableFor: plan.description,
+      features: plan.features,
+      popular: plan.popular,
+    })),
+    addons: (cat.addons ?? []).map((addon) => ({
+      id: addon.id,
+      name: addon.name,
+      price: {
+        type: "range" as const,
+        minInr: addon.priceINR.min,
+        maxInr: addon.priceINR.max,
+      },
+    })),
+    addonsTitle: cat.addonsTitle,
+  }));
+}
 
-export const defaultInrPricingTabId = inrPricingTabs[0].id;
+/** Static fallback tabs (hardcoded packages). Prefer CMS-fetched packages via packagesToInrTabs. */
+export const inrPricingTabs: InrPricingTabConfig[] = packagesToInrTabs(PRICING_PACKAGES);
+
+export const defaultInrPricingTabId = inrPricingTabs[0]?.id ?? "website-development";
 
 export const INR_PRICING_TAB_STORAGE_KEY = "focusfolks-inr-pricing-tab";
 
-export function getInrPricingTabById(id: string): InrPricingTabConfig | undefined {
-  return inrPricingTabs.find((tab) => tab.id === id);
+export function getInrPricingTabById(
+  id: string,
+  tabs: InrPricingTabConfig[] = inrPricingTabs
+): InrPricingTabConfig | undefined {
+  return tabs.find((tab) => tab.id === id);
 }

@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { industries } from "@/constants/services";
+import { industries as fallbackIndustries } from "@/constants/services";
+import type { IndustryItem } from "@/lib/cms/homepage";
 import { SectionHeader } from "@/components/shared/section-header";
 import { IndustryFlipCard } from "@/sections/home/industry-flip-card";
 import { fadeUp, defaultTransition, homeScrollViewport } from "@/lib/animations";
 
-export function IndustryExpertiseSection() {
+export function IndustryExpertiseSection({ industries }: { industries?: IndustryItem[] }) {
+  const list = industries && industries.length > 0 ? industries : fallbackIndustries;
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,7 +42,7 @@ export function IndustryExpertiseSection() {
         </motion.div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {industries.map((industry, idx) => (
+          {list.map((industry, idx) => (
             <IndustryFlipCard key={industry.name} industry={industry} idx={idx} />
           ))}
         </div>

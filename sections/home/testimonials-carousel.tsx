@@ -6,6 +6,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { motion } from "framer-motion";
 import { homeTeamThoughts } from "@/constants/content";
+import type { TeamThought } from "@/types";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Quote, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,7 +18,8 @@ const CARD_CURVES = [
   "home-testimonial-card home-testimonial-card-curve-d",
 ] as const;
 
-export function TeamThoughtsCarouselSection() {
+export function TeamThoughtsCarouselSection({ thoughts }: { thoughts?: TeamThought[] }) {
+  const members = thoughts && thoughts.length > 0 ? thoughts : homeTeamThoughts;
   const autoplay = useMemo(
     () =>
       Autoplay({
@@ -71,13 +73,13 @@ export function TeamThoughtsCarouselSection() {
 
         <div className="mt-10 overflow-hidden" ref={emblaRef}>
           <div className="flex touch-pan-y">
-            {homeTeamThoughts.map((member, idx) => (
+            {members.map((member, idx) => (
               <div
                 key={member.id}
                 className="min-w-0 flex-[0_0_100%] px-1 sm:px-2"
                 role="group"
                 aria-roledescription="slide"
-                aria-label={`${idx + 1} of ${homeTeamThoughts.length}`}
+                aria-label={`${idx + 1} of ${members.length}`}
                 aria-hidden={idx !== selectedIndex}
               >
                 <article
@@ -142,10 +144,10 @@ export function TeamThoughtsCarouselSection() {
           <div className="text-sm font-semibold text-slate-400">
             <span className="text-white">{selectedIndex + 1}</span>
             <span className="mx-1.5 text-slate-500">/</span>
-            {homeTeamThoughts.length} team voices
+            {members.length} team voices
           </div>
           <div className="flex gap-2">
-            {homeTeamThoughts.map((member, i) => (
+            {members.map((member, i) => (
               <button
                 key={member.id}
                 type="button"

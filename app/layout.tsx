@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { PageWrapper } from "@/components/layout/page-wrapper";
-import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import { organizationJsonLd, siteConfig, siteIcons } from "@/lib/seo";
 
@@ -50,6 +49,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const orgJsonLd = JSON.stringify(organizationJsonLd());
+
   return (
     <html
       lang="en"
@@ -57,16 +58,15 @@ export default function RootLayout({
       style={{ colorScheme: "dark", backgroundColor: "#000000" }}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: orgJsonLd }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-black" style={{ backgroundColor: "#000000" }} suppressHydrationWarning>
-        <ThemeProvider>
-          <ToastProvider />
-          <PageWrapper>{children}</PageWrapper>
-          {/* Organization schema for SEO trust. */}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
-          />
-        </ThemeProvider>
+        <ToastProvider />
+        <PageWrapper>{children}</PageWrapper>
       </body>
     </html>
   );

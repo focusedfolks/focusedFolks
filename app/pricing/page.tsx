@@ -5,6 +5,10 @@ import { FaqSection } from "@/components/shared/faq-section";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 import { GalaxyStack } from "@/components/shared/scroll-stack-card";
 import { pricingFaqs } from "@/constants/content";
+import { getPricingPackages } from "@/lib/cms/pricing";
+import { packagesToInrTabs } from "@/constants/inr-pricing-tabs";
+
+export const revalidate = 300;
 
 export function generateMetadata(): Metadata {
   return createMetadata({
@@ -27,11 +31,14 @@ export function generateMetadata(): Metadata {
   });
 }
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const packages = await getPricingPackages();
+  const tabs = packagesToInrTabs(packages);
+
   return (
     <>
       <GalaxyStack stagger={0}>
-        <InrPricingUnifiedSection />
+        <InrPricingUnifiedSection tabs={tabs} />
       </GalaxyStack>
       <FaqSection
         id="pricing-faq"
@@ -45,4 +52,3 @@ export default function PricingPage() {
     </>
   );
 }
-

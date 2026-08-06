@@ -3,9 +3,10 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { whyChooseUs } from "@/constants/services";
+import type { ValuePropItem } from "@/lib/cms/homepage";
 import { DynamicIcon } from "@/components/shared/icon-map";
 import { SectionHeader } from "@/components/shared/section-header";
-import { defaultTransition, fadeUp, homeScrollViewport, servicesScrollViewport } from "@/lib/animations";
+import { defaultTransition, fadeUp, homeScrollViewport } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 
 const TAG_COLORS = [
@@ -14,7 +15,8 @@ const TAG_COLORS = [
   "border-cyan-400/25 bg-cyan-500/10 text-cyan-100",
 ] as const;
 
-export function WhyChooseUsSection() {
+export function WhyChooseUsSection({ items }: { items?: ValuePropItem[] }) {
+  const list = items && items.length > 0 ? items : whyChooseUs;
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,7 +29,7 @@ export function WhyChooseUsSection() {
         />
 
         <div className="services-benefits-masonry">
-          {whyChooseUs.map((item, idx) => (
+          {list.map((item, idx) => (
             <motion.article
               key={item.title}
               initial="hidden"

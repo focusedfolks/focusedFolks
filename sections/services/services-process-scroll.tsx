@@ -10,27 +10,35 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { processStepImages, processSteps } from "@/constants/services";
+import { processStepImages, processSteps as fallbackProcessSteps } from "@/constants/services";
+import type { ProcessStepItem } from "@/lib/cms/homepage";
 import { SectionHeader } from "@/components/shared/section-header";
 import { cn } from "@/lib/utils";
 
-const STEP_COUNT = processSteps.length;
+function fallbackSteps(): ProcessStepItem[] {
+  return fallbackProcessSteps.map((s, i) => ({
+    step: s.step,
+    title: s.title,
+    description: s.description,
+    image: processStepImages[i] ?? processStepImages[0],
+  }));
+}
 
 function ProcessStepSlide({
   step,
   idx,
-  image,
+  stepCount,
   scrollYProgress,
 }: {
-  step: (typeof processSteps)[number];
+  step: ProcessStepItem;
   idx: number;
-  image: string;
+  stepCount: number;
   scrollYProgress: MotionValue<number>;
 }) {
-  const segment = 1 / STEP_COUNT;
+  const segment = 1 / stepCount;
   const start = idx * segment;
   const end = (idx + 1) * segment;
-  const isLast = idx === STEP_COUNT - 1;
+  const isLast = idx === stepCount - 1;
 
   const opacity = useTransform(
     scrollYProgress,
@@ -46,7 +54,7 @@ function ProcessStepSlide({
   return (
     <motion.div style={{ opacity }} className="absolute inset-0">
       <motion.div className="absolute inset-0" style={{ scale: imageScale }}>
-        <Image src={image} alt="" fill className="object-cover object-center" sizes="100vw" priority={idx === 0} />
+        <Image src={step.image} alt="" fill className="object-cover object-center" sizes="100vw" priority={idx === 0} />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950/88 via-slate-950/72 to-slate-950/55" />
       <div className="absolute inset-0 bg-slate-950/35" />
@@ -61,7 +69,7 @@ function ProcessStepSlide({
               {step.step}
             </span>
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Step {idx + 1} of {STEP_COUNT}
+              Step {idx + 1} of {stepCount}
             </span>
           </div>
           <h3 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -74,7 +82,7 @@ function ProcessStepSlide({
   );
 }
 
-function ProcessStaticFallback() {
+function ProcessStaticFallback({ steps }: { steps: ProcessStepItem[] }) {
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto space-y-5 px-4 sm:px-6 lg:px-8">
@@ -85,18 +93,12 @@ function ProcessStaticFallback() {
           align="left"
           servicesPage
         />
-        {processSteps.map((step, idx) => (
+        {steps.map((step) => (
           <div
-            key={step.step}
+            key={step.step + step.title}
             className="relative min-h-[280px] overflow-hidden rounded-3xl border border-white/10 sm:min-h-[320px]"
           >
-            <Image
-              src={processStepImages[idx]}
-              alt=""
-              fill
-              className="object-cover object-center"
-              sizes="100vw"
-            />
+            <Image src={step.image} alt="" fill className="object-cover object-center" sizes="100vw" />
             <div className="absolute inset-0 bg-slate-950/75" />
             <div className="relative z-10 p-6 md:p-10">
               <span className="text-xs font-extrabold tracking-widest text-cyan-200">{step.step}</span>
@@ -110,7 +112,9 @@ function ProcessStaticFallback() {
   );
 }
 
-export function ServicesProcessScroll() {
+export function ServicesProcessScroll({ steps }: { steps?: ProcessStepItem[] }) {
+  const list = steps && steps.length > 0 ? steps : fallbackSteps();
+  const stepCount = list.length;
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
@@ -121,19 +125,19 @@ export function ServicesProcessScroll() {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
-    const step = Math.min(STEP_COUNT - 1, Math.max(0, Math.floor(value * STEP_COUNT)));
+    const step = Math.min(stepCount - 1, Math.max(0, Math.floor(value * stepCount)));
     setActiveStep(step);
   });
 
   if (prefersReducedMotion) {
-    return <ProcessStaticFallback />;
+    return <ProcessStaticFallback steps={list} />;
   }
 
   return (
     <section
       ref={containerRef}
       className="relative"
-      style={{ height: `${STEP_COUNT * 100}vh` }}
+      style={{ height: `${Math.max(stepCount, 1) * 100}vh` }}
       aria-label="Delivery process"
     >
       <div className="sticky top-0 h-[100dvh] overflow-hidden">
@@ -148,20 +152,20 @@ export function ServicesProcessScroll() {
           />
 
           <div className="relative min-h-0 flex-1 overflow-hidden rounded-3xl border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
-            {processSteps.map((step, idx) => (
+            {list.map((step, idx) => (
               <ProcessStepSlide
-                key={step.step}
+                key={step.step + step.title}
                 step={step}
                 idx={idx}
-                image={processStepImages[idx]}
+                stepCount={stepCount}
                 scrollYProgress={scrollYProgress}
               />
             ))}
 
             <div className="pointer-events-none absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-6">
-              {processSteps.map((step, idx) => (
+              {list.map((step, idx) => (
                 <div
-                  key={step.step}
+                  key={step.step + step.title}
                   className={cn(
                     "h-2 rounded-full transition-all duration-300",
                     activeStep === idx ? "w-8 bg-cyan-400" : "w-2 bg-white/35"

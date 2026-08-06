@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { homeHighlightStats } from "@/constants/content";
+import type { StatItem } from "@/lib/cms/homepage";
 import { SectionHeader } from "@/components/shared/section-header";
 import { defaultTransition, fadeUp, homeScrollViewport } from "@/lib/animations";
 
@@ -14,7 +15,8 @@ const STAT_FLAIR = [
   "Quality and honesty over inflated promises.",
 ] as const;
 
-export function StatisticsSection() {
+export function StatisticsSection({ stats }: { stats?: StatItem[] }) {
+  const list = stats && stats.length > 0 ? stats : homeHighlightStats;
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,7 +51,7 @@ export function StatisticsSection() {
 
           <div className="home-stats-metrics lg:col-span-7">
             <div className="grid gap-4 sm:grid-cols-2">
-              {homeHighlightStats.map((stat, idx) => (
+              {list.map((stat, idx) => (
                 <motion.div
                   key={stat.label}
                   initial="hidden"

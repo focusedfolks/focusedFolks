@@ -11,6 +11,9 @@ import { StatisticsSection } from "@/sections/home/statistics-section";
 import { FaqSection } from "@/components/shared/faq-section";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 import { homeFaqs } from "@/constants/content";
+import { getHomepageContent } from "@/lib/cms/homepage";
+
+export const revalidate = 300;
 
 export function generateMetadata(): Metadata {
   return createMetadata({
@@ -29,25 +32,27 @@ export function generateMetadata(): Metadata {
   });
 }
 
-export default function Home() {
+export default async function Home() {
+  const home = await getHomepageContent();
+
   return (
     <>
-      <HeroSection />
+      <HeroSection slides={home.slides} />
       <GalaxyStack stagger={0}>
         <ServicesOverview />
       </GalaxyStack>
       <GalaxyStack stagger={1}>
-        <WhyChooseUsSection />
+        <WhyChooseUsSection items={home.valueProps} />
       </GalaxyStack>
-      <ServicesProcessScroll />
+      <ServicesProcessScroll steps={home.processSteps} />
       <GalaxyStack stagger={2}>
-        <TeamThoughtsCarouselSection />
+        <TeamThoughtsCarouselSection thoughts={home.teamThoughts} />
       </GalaxyStack>
       <GalaxyStack stagger={3}>
-        <IndustryExpertiseSection />
+        <IndustryExpertiseSection industries={home.industries} />
       </GalaxyStack>
       <GalaxyStack stagger={4}>
-        <StatisticsSection />
+        <StatisticsSection stats={home.stats} />
       </GalaxyStack>
       <FaqSection
         id="home-faq"
