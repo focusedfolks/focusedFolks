@@ -1,12 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { companyValues, officeLocations } from "@/constants/content";
+import type { OfficeLocation } from "@/constants/contact";
+import type { AboutValue } from "@/lib/cms/about";
 import { DynamicIcon } from "@/components/shared/icon-map";
 import { SectionHeader } from "@/components/shared/section-header";
 import { defaultTransition, fadeUp, servicesScrollViewport } from "@/lib/animations";
 
-export function AboutValuesPresence() {
+export function AboutValuesPresence({
+  values,
+  offices,
+}: {
+  values: AboutValue[];
+  offices: OfficeLocation[];
+}) {
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,7 +28,7 @@ export function AboutValuesPresence() {
             />
 
             <div className="space-y-4">
-              {companyValues.map((v, idx) => (
+              {values.map((v, idx) => (
                 <motion.div
                   key={v.title}
                   initial="hidden"
@@ -57,7 +64,7 @@ export function AboutValuesPresence() {
             />
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {officeLocations.map((o, idx) => (
+              {offices.map((o, idx) => (
                 <motion.div
                   key={o.city}
                   initial="hidden"

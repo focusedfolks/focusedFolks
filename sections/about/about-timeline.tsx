@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { companyTimeline } from "@/constants/content";
+import type { AboutTimelineItem } from "@/lib/cms/about";
 import { SectionHeader } from "@/components/shared/section-header";
 import { defaultTransition, fadeUp, servicesScrollViewport } from "@/lib/animations";
 
-export function AboutTimeline() {
+export function AboutTimeline({ timeline }: { timeline: AboutTimelineItem[] }) {
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,7 +20,7 @@ export function AboutTimeline() {
         <div className="relative space-y-4">
           <div className="pointer-events-none absolute bottom-0 left-[1.35rem] top-0 hidden w-px bg-gradient-to-b from-cyan-500/40 via-blue-500/20 to-transparent md:block" aria-hidden />
 
-          {companyTimeline.map((t, idx) => (
+          {timeline.map((t, idx) => (
             <motion.div
               key={t.year}
               initial="hidden"

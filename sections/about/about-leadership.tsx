@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { teamMembers } from "@/constants/content";
+import type { TeamMember } from "@/types";
 import { SectionHeader } from "@/components/shared/section-header";
 import { defaultTransition, fadeUp, servicesScrollViewport } from "@/lib/animations";
 
@@ -13,7 +13,7 @@ function LinkedInIcon({ className }: { className?: string }) {
   );
 }
 
-export function AboutLeadership() {
+export function AboutLeadership({ members }: { members: TeamMember[] }) {
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,7 +26,7 @@ export function AboutLeadership() {
         />
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {teamMembers.map((m, idx) => (
+          {members.map((m, idx) => (
             <motion.article
               key={m.id}
               initial="hidden"

@@ -1,10 +1,10 @@
 "use client";
 
-import { aboutCapabilityAreas } from "@/constants/content";
+import type { AboutCapability } from "@/lib/cms/about";
 import { SectionHeader } from "@/components/shared/section-header";
 import { AboutCapabilityCard } from "@/sections/about/about-capability-card";
 
-export function AboutCapabilities() {
+export function AboutCapabilities({ capabilities }: { capabilities: AboutCapability[] }) {
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,7 +17,7 @@ export function AboutCapabilities() {
         />
 
         <div className="about-capabilities-masonry">
-          {aboutCapabilityAreas.map((area, idx) => (
+          {capabilities.map((area, idx) => (
             <div key={area.id} className="about-capability-item mb-5 break-inside-avoid">
               <AboutCapabilityCard area={area} idx={idx} />
             </div>
