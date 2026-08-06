@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { MapPin, Phone } from "lucide-react";
-import { officeLocations, googleMapsEmbedUrl } from "@/constants/contact";
+import type { OfficeLocation } from "@/constants/contact";
+import { googleMapsEmbedUrl } from "@/constants/contact";
 import { ScrollStackCard } from "@/components/shared/scroll-stack-card";
 
-export function OfficeMaps() {
+export function OfficeMaps({ offices }: { offices: OfficeLocation[] }) {
   return (
     <div className="mt-10">
       <div>
@@ -14,7 +15,7 @@ export function OfficeMaps() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        {officeLocations.map((office, idx) => (
+        {offices.map((office, idx) => (
           <ScrollStackCard
             key={office.city}
             stagger={8 + idx * 6}

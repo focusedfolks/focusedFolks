@@ -10,8 +10,15 @@ import { ScrollToTopButton } from "@/components/shared/scroll-to-top";
 import { CursorStarTrail } from "@/components/shared/cursor-star-trail";
 import { WhatsAppFloat } from "@/components/shared/whatsapp-float";
 import { SiteLoader } from "@/components/shared/site-loader";
+import type { ContactInfo } from "@/lib/cms/contact";
 
-export function PageWrapper({ children }: { children: React.ReactNode }) {
+export function PageWrapper({
+  children,
+  contact,
+}: {
+  children: React.ReactNode;
+  contact: ContactInfo;
+}) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
 
@@ -28,7 +35,7 @@ export function PageWrapper({ children }: { children: React.ReactNode }) {
         <GalaxyPageGate>
           <RouteTransition>{children}</RouteTransition>
         </GalaxyPageGate>
-        <Footer />
+        <Footer contact={contact} />
         <StickyMobileCta />
         <WhatsAppFloat />
         <ScrollToTopButton />

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { footerCompanyLinks, footerLegalLinks, socialLinks } from "@/constants/navigation";
-import { officeLocations } from "@/constants/contact";
+import type { ContactInfo } from "@/lib/cms/contact";
 import { services } from "@/constants/services";
 import { siteConfig } from "@/lib/seo";
 import { BrandLogo } from "@/components/shared/brand-logo";
@@ -39,7 +39,7 @@ function SocialIcon({ name, className }: { name: string; className?: string }) {
   }
 }
 
-export function Footer() {
+export function Footer({ contact }: { contact: ContactInfo }) {
   return (
     <footer className="footer-site relative overflow-hidden border-t border-black bg-black">
       <FooterBackdrop />
@@ -93,14 +93,14 @@ export function Footer() {
               <ul className="mt-4 space-y-4 text-sm">
                 <li>
                   <a
-                    href={`mailto:${siteConfig.contact.email}`}
+                    href={`mailto:${contact.email}`}
                     className="footer-link flex items-start gap-2"
                   >
                     <Mail className="footer-icon mt-0.5 h-4 w-4 shrink-0" />
-                    <span className="break-all">{siteConfig.contact.email}</span>
+                    <span className="break-all">{contact.email}</span>
                   </a>
                 </li>
-                {officeLocations.map((office) => (
+                {contact.offices.map((office) => (
                   <li key={office.city} className="space-y-2">
                     <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
                       {office.city}, {office.country}

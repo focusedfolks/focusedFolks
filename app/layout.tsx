@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 import { ToastProvider } from "@/components/providers/toast-provider";
+import { getContactInfo } from "@/lib/cms/contact";
 import { organizationJsonLd, siteConfig, siteIcons } from "@/lib/seo";
 
 const inter = Inter({
@@ -44,12 +45,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const orgJsonLd = JSON.stringify(organizationJsonLd());
+  const contact = await getContactInfo();
 
   return (
     <html
@@ -66,7 +68,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-black" style={{ backgroundColor: "#000000" }} suppressHydrationWarning>
         <ToastProvider />
-        <PageWrapper>{children}</PageWrapper>
+        <PageWrapper contact={contact}>{children}</PageWrapper>
       </body>
     </html>
   );

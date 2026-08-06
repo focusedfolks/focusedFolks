@@ -115,7 +115,10 @@ export async function saveContactSettings(value: {
       updated_at: new Date().toISOString(),
     });
     if (error) return { ok: false, error: error.message };
-    await revalidateAdmin("/admin/contact-settings", "/contact");
+    await revalidateAdmin("/admin/contact-settings", "/contact", "/about");
+    const { revalidatePath } = await import("next/cache");
+    // Footer reads contact via root layout — invalidate the layout tree.
+    revalidatePath("/", "layout");
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Save failed" };
@@ -207,6 +210,12 @@ export async function reorderFaqs(page: string, orderedIds: string[]): Promise<A
   }
 }
 
+async function revalidateBlog() {
+  await revalidateAdmin("/admin/blog", "/blog");
+  const { revalidatePath } = await import("next/cache");
+  revalidatePath("/blog", "layout");
+}
+
 export async function upsertBlogPost(input: {
   id?: string;
   slug: string;
@@ -237,7 +246,7 @@ export async function upsertBlogPost(input: {
       ? await supabase.from("blog_posts").update(row).eq("id", input.id)
       : await supabase.from("blog_posts").insert(row);
     if (error) return { ok: false, error: error.message };
-    await revalidateAdmin("/admin/blog", "/blog");
+    await revalidateBlog();
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Save failed" };
@@ -249,7 +258,7 @@ export async function deleteBlogPost(id: string): Promise<ActionResult> {
     const supabase = await requireAuthedClient();
     const { error } = await supabase.from("blog_posts").delete().eq("id", id);
     if (error) return { ok: false, error: error.message };
-    await revalidateAdmin("/admin/blog", "/blog");
+    await revalidateBlog();
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Delete failed" };

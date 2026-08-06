@@ -71,7 +71,7 @@ export const CMS_SECTIONS: CmsSectionConfig[] = [
     href: "/admin/blog",
     title: "Blog",
     desc: "Posts, publish/unpublish",
-    publicFetchWired: false,
+    publicFetchWired: true,
     countTable: "blog_posts",
   },
   {
@@ -79,7 +79,7 @@ export const CMS_SECTIONS: CmsSectionConfig[] = [
     href: "/admin/products",
     title: "Products",
     desc: "Product cards and status",
-    publicFetchWired: false,
+    publicFetchWired: true,
     countTable: "products",
   },
   {
@@ -87,7 +87,7 @@ export const CMS_SECTIONS: CmsSectionConfig[] = [
     href: "/admin/about",
     title: "About",
     desc: "Team bios, values, timeline",
-    publicFetchWired: false,
+    publicFetchWired: true,
     countTable: "team_members",
   },
   {
@@ -95,7 +95,7 @@ export const CMS_SECTIONS: CmsSectionConfig[] = [
     href: "/admin/contact-settings",
     title: "Contact",
     desc: "Email, phones, offices (shared with footer)",
-    publicFetchWired: false,
+    publicFetchWired: true,
     countTable: "site_settings_contact",
   },
 ];

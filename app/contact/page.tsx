@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Mail, Phone } from "lucide-react";
 import { createMetadata } from "@/lib/seo";
+import { getContactInfo } from "@/lib/cms/contact";
+import { getFaqs } from "@/lib/cms/faqs";
 import { SectionHeader } from "@/components/shared/section-header";
 import { ContactForm } from "@/sections/contact/contact-form";
 import { OfficeMaps } from "@/sections/contact/office-maps";
 import { ScrollStackCard } from "@/components/shared/scroll-stack-card";
-import { CONTACT_EMAIL, contactPhones, contactFaqs } from "@/constants/contact";
 import { FaqSection } from "@/components/shared/faq-section";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 
@@ -26,7 +27,9 @@ export function generateMetadata(): Metadata {
   });
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [contact, faqItems] = await Promise.all([getContactInfo(), getFaqs("contact")]);
+
   return (
     <div className="relative w-full max-w-full overflow-x-clip overflow-y-visible">
         <section className="pt-24 pb-10 md:pb-14">
@@ -51,14 +54,14 @@ export default function ContactPage() {
 
                   <div className="mt-6 space-y-3">
                     <a
-                      href={`mailto:${CONTACT_EMAIL}`}
+                      href={`mailto:${contact.email}`}
                       className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-all duration-300 hover:border-cyan-400/30 hover:bg-white/10"
                     >
                       <Mail className="h-5 w-5 shrink-0 text-cyan-200" />
-                      <span className="text-sm font-bold text-white">{CONTACT_EMAIL}</span>
+                      <span className="text-sm font-bold text-white">{contact.email}</span>
                     </a>
 
-                    {contactPhones.map((phone) => (
+                    {contact.phones.map((phone) => (
                       <a
                         key={phone.region}
                         href={phone.href}
@@ -78,14 +81,14 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <OfficeMaps />
+            <OfficeMaps offices={contact.offices} />
           </div>
         </section>
 
         <FaqSection
           id="faq"
           stackStagger={12}
-          items={contactFaqs}
+          items={faqItems}
           badge="Contact FAQ"
           title="Questions about reaching us"
           description="How to contact FocusFolks, discuss ideas, and what to expect after you get in touch."
