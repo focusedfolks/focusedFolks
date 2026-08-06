@@ -7,7 +7,7 @@ import {
 } from "@/lib/cms/services";
 import { ServiceDetailView } from "@/sections/services/service-detail-view";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
   const slugs = await getServiceSlugsFromCms();

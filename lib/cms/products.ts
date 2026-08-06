@@ -1,7 +1,7 @@
 import { products as fallbackProducts } from "@/constants/products";
 import type { Product, ProductStatus } from "@/types";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export type DbProduct = {
   id: string;
@@ -41,7 +41,7 @@ export async function getProducts(): Promise<Product[]> {
   }
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("products")
       .select("*")

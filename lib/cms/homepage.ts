@@ -10,7 +10,7 @@ import {
   whyChooseUs,
 } from "@/constants/services";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { TeamThought } from "@/types";
 
 export type HeroSlide = {
@@ -169,7 +169,7 @@ export async function getHomepageContent(): Promise<HomepageContent> {
   if (!isSupabaseConfigured()) return fallback;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const [
       { data: hero, error: heroErr },
       { data: valueProps, error: vpErr },

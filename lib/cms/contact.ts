@@ -5,7 +5,7 @@ import {
   type OfficeLocation,
 } from "@/constants/contact";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export type ContactPhone = {
   region: string;
@@ -80,7 +80,7 @@ export async function getContactInfo(): Promise<ContactInfo> {
   if (!isSupabaseConfigured()) return fallback;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("site_settings")
       .select("value")

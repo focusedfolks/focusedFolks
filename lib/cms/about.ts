@@ -6,7 +6,7 @@ import {
 } from "@/constants/content";
 import type { TeamMember } from "@/types";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { DbTeamMember } from "@/lib/cms/homepage";
 
 export type AboutValue = {
@@ -114,7 +114,7 @@ export async function getAboutContent(): Promise<AboutContent> {
   if (!isSupabaseConfigured()) return fallback;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const [{ data: teamRows, error: teamErr }, { data: settingsRow, error: settingsErr }] =
       await Promise.all([
         supabase.from("team_members").select("*").order("sort_order"),

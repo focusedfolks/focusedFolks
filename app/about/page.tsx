@@ -11,6 +11,8 @@ import { ServicesBenefits } from "@/sections/services/services-benefits";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 import { GalaxyStack } from "@/components/shared/scroll-stack-card";
 
+export const dynamic = "force-dynamic";
+
 export function generateMetadata(): Metadata {
   return createMetadata({
     title: "About Us",

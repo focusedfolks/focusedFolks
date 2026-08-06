@@ -14,7 +14,8 @@ import { getHomepageContent } from "@/lib/cms/homepage";
 import { getFaqs } from "@/lib/cms/faqs";
 import { getFeaturedServices } from "@/lib/cms/services";
 
-export const revalidate = 300;
+/** Always read latest CMS content after admin saves (no stale ISR snapshot). */
+export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
   return createMetadata({

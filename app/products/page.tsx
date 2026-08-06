@@ -6,6 +6,8 @@ import { ProductsHero } from "@/sections/products/products-hero";
 import { ProductsGrid } from "@/sections/products/products-grid";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 
+export const dynamic = "force-dynamic";
+
 export function generateMetadata(): Metadata {
   return createMetadata({
     title: "Products",

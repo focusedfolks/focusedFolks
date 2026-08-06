@@ -10,6 +10,8 @@ import { ScrollStackCard } from "@/components/shared/scroll-stack-card";
 import { FaqSection } from "@/components/shared/faq-section";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 
+export const dynamic = "force-dynamic";
+
 export function generateMetadata(): Metadata {
   return createMetadata({
     title: "Contact Us",

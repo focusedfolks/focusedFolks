@@ -57,8 +57,8 @@ export async function updatePricingTier(
 
     if (error) return { ok: false, error: error.message };
 
-    revalidatePath("/pricing");
-    revalidatePath("/admin/pricing");
+    revalidatePath("/pricing", "layout");
+    revalidatePath("/admin/pricing", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Save failed" };
@@ -79,8 +79,8 @@ export async function reorderPricingTier(
         .eq("category_id", categoryId);
       if (error) return { ok: false, error: error.message };
     }
-    revalidatePath("/pricing");
-    revalidatePath("/admin/pricing");
+    revalidatePath("/pricing", "layout");
+    revalidatePath("/admin/pricing", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Reorder failed" };
@@ -92,8 +92,8 @@ export async function deletePricingTier(tierId: string): Promise<ActionResult> {
     const supabase = await requireAuthedClient();
     const { error } = await supabase.from("pricing_tiers").delete().eq("id", tierId);
     if (error) return { ok: false, error: error.message };
-    revalidatePath("/pricing");
-    revalidatePath("/admin/pricing");
+    revalidatePath("/pricing", "layout");
+    revalidatePath("/admin/pricing", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Delete failed" };
@@ -134,8 +134,8 @@ export async function createPricingTier(
       sort_order: nextOrder,
     });
     if (error) return { ok: false, error: error.message };
-    revalidatePath("/pricing");
-    revalidatePath("/admin/pricing");
+    revalidatePath("/pricing", "layout");
+    revalidatePath("/admin/pricing", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Create failed" };

@@ -1,6 +1,6 @@
 import { blogPosts as fallbackPosts } from "@/constants/content";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { BlogPost } from "@/types";
 
 export type DbBlogPost = {
@@ -75,7 +75,7 @@ export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
   if (!isSupabaseConfigured()) return fallbackPosts;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("blog_posts")
       .select("*")
@@ -105,7 +105,7 @@ export async function getBlogPostBySlug(rawSlug: string): Promise<BlogPost | nul
   const wanted = normalizeSlug(rawSlug);
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
     const trySlug = async (slug: string) => {
       const { data, error } = await supabase
@@ -141,7 +141,7 @@ export async function getBlogSlugs(): Promise<string[]> {
   if (!isSupabaseConfigured()) return fallbackPosts.map((p) => p.slug);
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("blog_posts")
       .select("slug")

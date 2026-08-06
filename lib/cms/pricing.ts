@@ -1,7 +1,7 @@
 import type { PricingAmount, ServiceCategoryPackage } from "@/constants/pricing-packages";
 import { PRICING_PACKAGES } from "@/constants/pricing-packages";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export type DbPricingCategory = {
   id: string;
@@ -110,7 +110,7 @@ export async function getPricingPackages(): Promise<ServiceCategoryPackage[]> {
   }
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const [{ data: categories, error: catErr }, { data: tiers, error: tierErr }, { data: addons, error: addonErr }] =
       await Promise.all([
         supabase.from("pricing_categories").select("*").order("sort_order"),

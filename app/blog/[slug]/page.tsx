@@ -11,7 +11,7 @@ import { GalaxyStack } from "@/components/shared/scroll-stack-card";
 import { ScrollStackCard } from "@/components/shared/scroll-stack-card";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 function pickIllustration(category: string) {
   const key = category.toLowerCase();

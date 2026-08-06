@@ -4,7 +4,7 @@ import {
   getServicePageData,
 } from "@/lib/services";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Service, ServiceDetailContent } from "@/types";
 
 export type DbService = {
@@ -67,7 +67,7 @@ export async function getServices(): Promise<Service[]> {
   if (!isSupabaseConfigured()) return fallbackServices;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase.from("services").select("*").order("sort_order");
 
     if (error || !data?.length) {
@@ -89,7 +89,7 @@ export async function getFeaturedServices(): Promise<Service[]> {
   if (!isSupabaseConfigured()) return featuredFromFallback();
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("services")
       .select("*")
@@ -117,7 +117,7 @@ export async function getServicePageDataFromCms(
   if (!isSupabaseConfigured()) return getServicePageData(slug);
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase.from("services").select("*").eq("slug", slug).maybeSingle();
 
     if (error || !data) {
@@ -141,7 +141,7 @@ export async function getServiceSlugsFromCms(): Promise<string[]> {
   if (!isSupabaseConfigured()) return getAllServiceSlugs();
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase.from("services").select("slug").order("sort_order");
     if (error || !data?.length) return getAllServiceSlugs();
     return data.map((r) => r.slug as string);

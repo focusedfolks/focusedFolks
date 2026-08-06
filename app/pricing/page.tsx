@@ -8,7 +8,7 @@ import { getPricingPackages } from "@/lib/cms/pricing";
 import { getFaqs } from "@/lib/cms/faqs";
 import { packagesToInrTabs } from "@/constants/inr-pricing-tabs";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
   return createMetadata({

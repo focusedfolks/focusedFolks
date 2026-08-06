@@ -2,7 +2,7 @@ import { homeFaqs, pricingFaqs, servicesFaqs } from "@/constants/content";
 import { contactFaqs } from "@/constants/contact";
 import type { FaqItem } from "@/types";
 import { isSupabaseConfigured } from "@/lib/supabase/middleware";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export type FaqPage = "homepage" | "pricing" | "services" | "contact";
 
@@ -30,7 +30,7 @@ export async function getFaqs(page: FaqPage): Promise<FaqItem[]> {
   if (!isSupabaseConfigured()) return fallback;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("faqs")
       .select("question, answer, sort_order")

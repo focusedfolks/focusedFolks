@@ -3,7 +3,7 @@ import { createMetadata } from "@/lib/seo";
 import { getPublishedBlogPosts } from "@/lib/cms/blog";
 import { BlogPageClient } from "@/sections/blog/blog-page-client";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
   return createMetadata({

@@ -13,7 +13,7 @@ import { GalaxyStack } from "@/components/shared/scroll-stack-card";
 import { getServices } from "@/lib/cms/services";
 import { getFaqs } from "@/lib/cms/faqs";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
   return createMetadata({
