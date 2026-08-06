@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
+import { getProducts } from "@/lib/cms/products";
 import { GalaxyStack } from "@/components/shared/scroll-stack-card";
 import { ProductsHero } from "@/sections/products/products-hero";
 import { ProductsGrid } from "@/sections/products/products-grid";
@@ -22,7 +23,9 @@ export function generateMetadata(): Metadata {
   });
 }
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProducts();
+
   return (
     <>
       <GalaxyStack stagger={0}>
@@ -30,7 +33,7 @@ export default function ProductsPage() {
       </GalaxyStack>
 
       <GalaxyStack stagger={6}>
-        <ProductsGrid />
+        <ProductsGrid products={products} />
       </GalaxyStack>
 
       <ServicesCtaSection />

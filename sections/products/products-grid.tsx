@@ -1,10 +1,10 @@
 "use client";
 
-import { products } from "@/constants/products";
+import type { Product } from "@/types";
 import { SectionHeader } from "@/components/shared/section-header";
 import { ProductCard } from "@/sections/products/product-card";
 
-export function ProductsGrid() {
+export function ProductsGrid({ products }: { products: Product[] }) {
   return (
     <section id="products-grid" className="py-10 md:py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
