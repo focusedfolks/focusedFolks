@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { deleteBlogPost, upsertBlogPost } from "@/app/admin/(dashboard)/content-actions";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 
 type BlogRow = {
   id: string;
@@ -79,7 +80,12 @@ export function BlogAdminClient({ posts }: { posts: BlogRow[] }) {
           <label className="admin-label">Title<input className="admin-input" required value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} /></label>
           <label className="admin-label">Excerpt<textarea className="admin-input" rows={2} value={editing.excerpt ?? ""} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} /></label>
           <label className="admin-label">Content<textarea className="admin-input" rows={5} value={editing.content} onChange={(e) => setEditing({ ...editing, content: e.target.value })} /></label>
-          <label className="admin-label">Cover image URL<input className="admin-input" value={editing.cover_image ?? ""} onChange={(e) => setEditing({ ...editing, cover_image: e.target.value })} /></label>
+          <ImageUploadField
+            label="Cover image"
+            value={editing.cover_image ?? ""}
+            folder="blog"
+            onChange={(cover_image) => setEditing({ ...editing, cover_image })}
+          />
           <label className="admin-label">Category<input className="admin-input" value={editing.category ?? ""} onChange={(e) => setEditing({ ...editing, category: e.target.value })} /></label>
           <label className="admin-label">Author<input className="admin-input" value={editing.author ?? ""} onChange={(e) => setEditing({ ...editing, author: e.target.value })} /></label>
           <label className="admin-label">Author role<input className="admin-input" value={editing.author_role ?? ""} onChange={(e) => setEditing({ ...editing, author_role: e.target.value })} /></label>

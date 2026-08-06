@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
+import { getPublishedBlogPosts } from "@/lib/cms/blog";
 import { BlogPageClient } from "@/sections/blog/blog-page-client";
+
+export const revalidate = 300;
 
 export function generateMetadata(): Metadata {
   return createMetadata({
@@ -12,7 +15,7 @@ export function generateMetadata(): Metadata {
   });
 }
 
-export default function BlogPage() {
-  return <BlogPageClient />;
+export default async function BlogPage() {
+  const posts = await getPublishedBlogPosts();
+  return <BlogPageClient posts={posts} />;
 }
-

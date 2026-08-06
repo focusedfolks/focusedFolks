@@ -1,21 +1,30 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/seo";
-import { blogPosts } from "@/constants/content";
+import { getPublishedBlogPosts } from "@/lib/cms/blog";
 import { getAllServiceSlugs } from "@/lib/services";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getPublishedBlogPosts();
+
   const serviceSitemap = getAllServiceSlugs().map((slug) => ({
     url: `${siteConfig.url}/services/${slug}`,
     changeFrequency: "monthly" as const,
     priority: 0.75,
   }));
 
-  const blogSitemap = blogPosts.map((p) => ({
-    url: `${siteConfig.url}/blog/${p.slug}`,
-    lastModified: new Date(p.date).toISOString().split("T")[0],
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+  const blogSitemap = posts.map((p) => {
+    const parsed = p.date ? new Date(p.date) : null;
+    const lastModified =
+      parsed && !Number.isNaN(parsed.getTime())
+        ? parsed.toISOString().split("T")[0]
+        : undefined;
+    return {
+      url: `${siteConfig.url}/blog/${p.slug}`,
+      ...(lastModified ? { lastModified } : {}),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    };
+  });
 
   return [
     { url: `${siteConfig.url}/`, changeFrequency: "weekly" as const, priority: 1 },
@@ -28,4 +37,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...blogSitemap,
   ];
 }
-

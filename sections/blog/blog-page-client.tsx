@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { blogPosts, blogCategories } from "@/constants/content";
+import { blogCategories } from "@/constants/content";
+import type { BlogPost } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,32 +19,32 @@ import { GalaxyGlass } from "@/components/shared/galaxy-glass";
 
 const pageSize = 6;
 
-export function BlogPageClient() {
+export function BlogPageClient({ posts }: { posts: BlogPost[] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const featured = useMemo(() => blogPosts.find((p) => p.featured) ?? blogPosts[0], []);
+  const featured = useMemo(() => posts.find((p) => p.featured) ?? posts[0], [posts]);
 
   const allTags = useMemo(() => {
     const s = new Set<string>();
-    blogPosts.forEach((p) => p.tags.forEach((t) => s.add(t)));
+    posts.forEach((p) => p.tags.forEach((t) => s.add(t)));
     return Array.from(s).slice(0, 10);
-  }, []);
+  }, [posts]);
 
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return blogPosts.filter((p) => {
+    return posts.filter((p) => {
       const matchesCategory = category === "All" ? true : p.category === category;
       const matchesQuery =
         !q || [p.title, p.excerpt, p.author.name].some((v) => v.toLowerCase().includes(q));
       const matchesTag = activeTag ? p.tags.includes(activeTag) : true;
       return matchesCategory && matchesQuery && matchesTag;
     });
-  }, [category, query, activeTag]);
+  }, [posts, category, query, activeTag]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, totalPages);

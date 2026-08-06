@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { createMetadata } from "@/lib/seo";
-import { blogPosts } from "@/constants/content";
+import { getBlogPostBySlug, getBlogSlugs } from "@/lib/cms/blog";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { GalaxyStack } from "@/components/shared/scroll-stack-card";
 import { ScrollStackCard } from "@/components/shared/scroll-stack-card";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
+
+export const revalidate = 300;
 
 function pickIllustration(category: string) {
   const key = category.toLowerCase();
@@ -28,31 +30,9 @@ function pickIllustration(category: string) {
   return "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80";
 }
 
-function normalizeSlug(raw: string) {
-  let s = raw;
-  try {
-    s = decodeURIComponent(s);
-  } catch {
-    // If the slug is malformed, fall back to raw value.
-  }
-  // Accept "title-like" slugs too (spaces, mixed case, punctuation).
-  return s
-    .trim()
-    .replace(/\/+$/, "")
-    .toLowerCase()
-    .replace(/[\s_]+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-function getPostBySlug(rawSlug: string) {
-  const wanted = normalizeSlug(rawSlug);
-  return blogPosts.find((p) => normalizeSlug(p.slug) === wanted);
-}
-
-export function generateStaticParams() {
-  return blogPosts.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const slugs = await getBlogSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -61,7 +41,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
   if (!post) return createMetadata({ title: "Blog", description: "Blog", path: "/blog" });
 
   return createMetadata({
@@ -74,7 +54,7 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
   if (!post) notFound();
 
   const illustration = pickIllustration(post.category);
