@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createMetadata } from "@/lib/seo";
-import { getAllServiceSlugs, getServicePageData } from "@/lib/services";
+import {
+  getServicePageDataFromCms,
+  getServiceSlugsFromCms,
+} from "@/lib/cms/services";
 import { ServiceDetailView } from "@/sections/services/service-detail-view";
 
-export function generateStaticParams() {
-  return getAllServiceSlugs().map((slug) => ({ slug }));
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const slugs = await getServiceSlugsFromCms();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -14,7 +20,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const data = getServicePageData(slug);
+  const data = await getServicePageDataFromCms(slug);
   if (!data) {
     return createMetadata({ title: "Services", description: "Services", path: "/services" });
   }
@@ -34,7 +40,7 @@ export default async function ServiceDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const data = getServicePageData(slug);
+  const data = await getServicePageDataFromCms(slug);
   if (!data) notFound();
 
   return <ServiceDetailView service={data.service} detail={data.detail} />;

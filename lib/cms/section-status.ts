@@ -63,7 +63,7 @@ export const CMS_SECTIONS: CmsSectionConfig[] = [
     href: "/admin/services",
     title: "Services",
     desc: "Service pages + featured homepage cards",
-    publicFetchWired: false,
+    publicFetchWired: true,
     countTable: "services",
   },
   {

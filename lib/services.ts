@@ -1,3 +1,8 @@
+/**
+ * Sync helpers over hardcoded constants — used as CMS fallbacks.
+ * Public pages should prefer `lib/cms/services` (`getServices`, `getFeaturedServices`,
+ * `getServicePageDataFromCms`) for live Supabase data with constant fallback.
+ */
 import { serviceHeroImages, services } from "@/constants/services";
 import { serviceDetails } from "@/constants/service-details";
 import type { Service, ServiceDetailContent } from "@/types";

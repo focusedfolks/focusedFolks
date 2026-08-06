@@ -1,12 +1,14 @@
-export default function AdminServicesPage() {
-  return (
-    <div>
-      <p className="admin-eyebrow">Scaffold</p>
-      <h1 className="admin-page-title">Services</h1>
-      <p className="admin-page-sub">
-        Service detail pages still use <code>constants/service-details.ts</code>. Full services CMS
-        editor is next — Homepage, Products, About, Contact, FAQs, and Blog are editable now.
-      </p>
-    </div>
-  );
+import { isSupabaseConfigured } from "@/lib/supabase/middleware";
+import { createClient } from "@/lib/supabase/server";
+import { ServicesAdminClient, type ServiceRow } from "@/components/admin/services-admin-client";
+
+export default async function AdminServicesPage() {
+  if (!isSupabaseConfigured()) {
+    return (
+      <div className="admin-warn">Configure Supabase in .env.local, then run npm run seed:cms</div>
+    );
+  }
+  const supabase = await createClient();
+  const { data } = await supabase.from("services").select("*").order("sort_order");
+  return <ServicesAdminClient services={(data ?? []) as ServiceRow[]} />;
 }

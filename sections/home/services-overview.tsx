@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { services } from "@/constants/services";
+import { services as fallbackServices } from "@/constants/services";
+import type { Service } from "@/types";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Button } from "@/components/ui/button";
 import { ServiceFlipCard } from "@/sections/services/service-flip-card";
@@ -12,11 +13,16 @@ import { fadeUp, defaultTransition, homeScrollViewport } from "@/lib/animations"
 
 const HOME_FEATURED_SERVICE_IDS = ["custom-software", "web-development", "design"] as const;
 
-export function ServicesOverview() {
-  const featuredServices = HOME_FEATURED_SERVICE_IDS.flatMap((id) => {
-    const service = services.find((item) => item.id === id);
+function resolveFeatured(services?: Service[]): Service[] {
+  if (services?.length) return services;
+  return HOME_FEATURED_SERVICE_IDS.flatMap((id) => {
+    const service = fallbackServices.find((item) => item.id === id);
     return service ? [service] : [];
   });
+}
+
+export function ServicesOverview({ services }: { services?: Service[] }) {
+  const featuredServices = resolveFeatured(services);
 
   return (
     <section className="py-16 md:py-24">

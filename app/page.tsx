@@ -12,6 +12,7 @@ import { FaqSection } from "@/components/shared/faq-section";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 import { getHomepageContent } from "@/lib/cms/homepage";
 import { getFaqs } from "@/lib/cms/faqs";
+import { getFeaturedServices } from "@/lib/cms/services";
 
 export const revalidate = 300;
 
@@ -33,16 +34,17 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Home() {
-  const [home, homeFaqItems] = await Promise.all([
+  const [home, homeFaqItems, featuredServices] = await Promise.all([
     getHomepageContent(),
     getFaqs("homepage"),
+    getFeaturedServices(),
   ]);
 
   return (
     <>
       <HeroSection slides={home.slides} />
       <GalaxyStack stagger={0}>
-        <ServicesOverview />
+        <ServicesOverview services={featuredServices} />
       </GalaxyStack>
       <GalaxyStack stagger={1}>
         <WhyChooseUsSection items={home.valueProps} />

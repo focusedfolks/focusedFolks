@@ -25,14 +25,18 @@ import {
   aboutCapabilityAreas,
   homeFaqs,
   pricingFaqs,
+  servicesFaqs,
   blogPosts,
 } from "../constants/content";
 import {
+  services,
+  serviceHeroImages,
   whyChooseUs,
   processSteps,
   processStepImages,
   industries,
 } from "../constants/services";
+import { serviceDetails } from "../constants/service-details";
 
 function requireEnv(name: string): string {
   const v = process.env[name];
@@ -187,6 +191,35 @@ async function main() {
     console.log(`  ✓ stats (${rows.length})`);
   }
 
+  // ---- Services ----
+  await supabase.from("services").delete().neq("slug", "__never__");
+  {
+    const featuredIds = new Set(["custom-software", "web-development", "design"]);
+    const rows = services.map((s, i) => {
+      const detail = serviceDetails[s.id];
+      const firstPriced = detail?.plans?.find((p) => p.priceFromUsd != null && p.priceFromUsd !== undefined);
+      return {
+        slug: s.id,
+        title: s.title,
+        tagline: detail?.tagline ?? null,
+        description: s.description,
+        hover_preview: s.megaSummary ?? null,
+        mega_summary: s.megaSummary ?? null,
+        price_from_usd: firstPriced?.priceFromUsd ?? null,
+        icon: s.icon,
+        href: s.href,
+        features: s.features ?? [],
+        hero_image: serviceHeroImages[s.id] ?? detail?.heroImage ?? null,
+        is_featured: featuredIds.has(s.id),
+        sort_order: i,
+        detail: detail ?? {},
+      };
+    });
+    const { error } = await supabase.from("services").insert(rows);
+    if (error) throw new Error(`services: ${error.message}`);
+    console.log(`  ✓ services (${rows.length})`);
+  }
+
   // ---- FAQs ----
   await supabase.from("faqs").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   {
@@ -199,6 +232,12 @@ async function main() {
       })),
       ...pricingFaqs.map((f, i) => ({
         page: "pricing" as const,
+        question: f.question,
+        answer: f.answer,
+        sort_order: i,
+      })),
+      ...servicesFaqs.map((f, i) => ({
+        page: "services" as const,
         question: f.question,
         answer: f.answer,
         sort_order: i,

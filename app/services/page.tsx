@@ -7,10 +7,13 @@ import { ServicesBenefits } from "@/sections/services/services-benefits";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 import { SectionHeader } from "@/components/shared/section-header";
 import { ServicesTechStackTabs } from "@/sections/services/services-tech-stack-tabs";
-import { servicesFaqs } from "@/constants/content";
 import { CaseStudiesSection } from "@/sections/home/case-studies-section";
 import { FaqSection } from "@/components/shared/faq-section";
 import { GalaxyStack } from "@/components/shared/scroll-stack-card";
+import { getServices } from "@/lib/cms/services";
+import { getFaqs } from "@/lib/cms/faqs";
+
+export const revalidate = 300;
 
 export function generateMetadata(): Metadata {
   return createMetadata({
@@ -33,7 +36,9 @@ export function generateMetadata(): Metadata {
   });
 }
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const [services, faqItems] = await Promise.all([getServices(), getFaqs("services")]);
+
   return (
     <>
       <GalaxyStack stagger={0}>
@@ -50,7 +55,7 @@ export default function ServicesPage() {
               align="left"
               servicesPage
             />
-            <ServicesGrid />
+            <ServicesGrid services={services} />
           </div>
         </section>
       </GalaxyStack>
@@ -89,7 +94,7 @@ export default function ServicesPage() {
       <FaqSection
         id="services-faq"
         stackStagger={20}
-        items={servicesFaqs}
+        items={faqItems}
         badge="Services FAQ"
         title="Common questions about our IT services"
         description="Scope, timelines, pricing, technology stack, and how to get started with FocusFolks."
