@@ -55,7 +55,7 @@ export const CMS_SECTIONS: CmsSectionConfig[] = [
     href: "/admin/faqs",
     title: "FAQs",
     desc: "Homepage and pricing FAQ sets",
-    publicFetchWired: false,
+    publicFetchWired: true,
     countTable: "faqs",
   },
   {

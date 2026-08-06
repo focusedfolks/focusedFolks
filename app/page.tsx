@@ -10,8 +10,8 @@ import { IndustryExpertiseSection } from "@/sections/home/industry-expertise";
 import { StatisticsSection } from "@/sections/home/statistics-section";
 import { FaqSection } from "@/components/shared/faq-section";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
-import { homeFaqs } from "@/constants/content";
 import { getHomepageContent } from "@/lib/cms/homepage";
+import { getFaqs } from "@/lib/cms/faqs";
 
 export const revalidate = 300;
 
@@ -33,7 +33,10 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Home() {
-  const home = await getHomepageContent();
+  const [home, homeFaqItems] = await Promise.all([
+    getHomepageContent(),
+    getFaqs("homepage"),
+  ]);
 
   return (
     <>
@@ -57,7 +60,7 @@ export default async function Home() {
       <FaqSection
         id="home-faq"
         stackStagger={5}
-        items={homeFaqs}
+        items={homeFaqItems}
         badge="FAQ"
         title="Frequently asked questions about FocusFolks"
         description="Detailed answers about our custom software development services, delivery process, pricing, technology stack, and how to start an engagement with our Ahmedabad and Dubai teams."

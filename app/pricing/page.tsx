@@ -4,8 +4,8 @@ import { InrPricingUnifiedSection } from "@/sections/pricing/inr-pricing-unified
 import { FaqSection } from "@/components/shared/faq-section";
 import { ServicesCtaSection } from "@/sections/services/services-cta-section";
 import { GalaxyStack } from "@/components/shared/scroll-stack-card";
-import { pricingFaqs } from "@/constants/content";
 import { getPricingPackages } from "@/lib/cms/pricing";
+import { getFaqs } from "@/lib/cms/faqs";
 import { packagesToInrTabs } from "@/constants/inr-pricing-tabs";
 
 export const revalidate = 300;
@@ -32,7 +32,10 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function PricingPage() {
-  const packages = await getPricingPackages();
+  const [packages, faqItems] = await Promise.all([
+    getPricingPackages(),
+    getFaqs("pricing"),
+  ]);
   const tabs = packagesToInrTabs(packages);
 
   return (
@@ -43,7 +46,7 @@ export default async function PricingPage() {
       <FaqSection
         id="pricing-faq"
         stackStagger={4}
-        items={pricingFaqs}
+        items={faqItems}
         badge="Pricing FAQ"
         title="Questions about our pricing and engagement models"
         description="Indicative rates, payment terms, regional pricing, and how to get a fixed quote."

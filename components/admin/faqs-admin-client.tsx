@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { deleteFaq, upsertFaq } from "@/app/admin/(dashboard)/content-actions";
+import { deleteFaq, reorderFaqs, upsertFaq } from "@/app/admin/(dashboard)/content-actions";
 
 type FaqRow = {
   id: string;
@@ -10,6 +10,7 @@ type FaqRow = {
   answer: string;
 };
 
+/** Primary tabs from the CMS brief; contact/services kept for seeded rows. */
 const PAGES = ["homepage", "pricing", "contact", "services"] as const;
 
 export function FaqsAdminClient({ faqs }: { faqs: FaqRow[] }) {
@@ -21,28 +22,45 @@ export function FaqsAdminClient({ faqs }: { faqs: FaqRow[] }) {
 
   return (
     <div>
-      <p className="admin-eyebrow">Content</p>
-      <h1 className="admin-page-title">FAQs</h1>
-      <p className="admin-page-sub">Separate sets per page — do not merge them.</p>
-      {message && <p className="mt-3 admin-muted">{message}</p>}
+      <div className="admin-header-row">
+        <div>
+          <p className="admin-eyebrow">Live section</p>
+          <h1 className="admin-page-title">FAQs</h1>
+          <p className="admin-page-sub">
+            Homepage and Pricing sets are separate — do not merge them. Public pages read each set by{" "}
+            <code>page</code>.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="admin-btn-primary"
+          onClick={() => setEditing({ id: "", page: tab, question: "", answer: "" })}
+        >
+          + Add FAQ
+        </button>
+      </div>
+      {message && (
+        <p className="mt-4 rounded-[10px] border border-[var(--admin-border)] bg-[var(--admin-surface-tint)] px-3 py-2 text-sm">
+          {message}
+        </p>
+      )}
 
       <div className="mt-5 flex flex-wrap gap-2">
         {PAGES.map((p) => (
-          <button key={p} type="button" className={`admin-chip${tab === p ? " admin-chip-active" : ""}`} onClick={() => setTab(p)}>
+          <button
+            key={p}
+            type="button"
+            className={`admin-chip${tab === p ? " admin-chip-active" : ""}`}
+            onClick={() => {
+              setTab(p);
+              setEditing(null);
+              setMessage(null);
+            }}
+          >
             {p} ({faqs.filter((f) => f.page === p).length})
           </button>
         ))}
       </div>
-
-      <button
-        type="button"
-        className="admin-btn-primary mt-4"
-        onClick={() =>
-          setEditing({ id: "", page: tab, question: "", answer: "" })
-        }
-      >
-        + Add FAQ
-      </button>
 
       {editing && (
         <form
@@ -61,24 +79,79 @@ export function FaqsAdminClient({ faqs }: { faqs: FaqRow[] }) {
             });
           }}
         >
-          <label className="admin-label">Question<input className="admin-input" required value={editing.question} onChange={(e) => setEditing({ ...editing, question: e.target.value })} /></label>
-          <label className="admin-label">Answer<textarea className="admin-input" rows={4} required value={editing.answer} onChange={(e) => setEditing({ ...editing, answer: e.target.value })} /></label>
+          <label className="admin-label">
+            Question
+            <input
+              className="admin-input"
+              required
+              value={editing.question}
+              onChange={(e) => setEditing({ ...editing, question: e.target.value })}
+            />
+          </label>
+          <label className="admin-label">
+            Answer
+            <textarea
+              className="admin-input"
+              rows={4}
+              required
+              value={editing.answer}
+              onChange={(e) => setEditing({ ...editing, answer: e.target.value })}
+            />
+          </label>
           <div className="flex gap-2">
-            <button type="submit" disabled={pending} className="admin-btn-primary">Save</button>
-            <button type="button" className="admin-btn-ghost" onClick={() => setEditing(null)}>Cancel</button>
+            <button type="submit" disabled={pending} className="admin-btn-primary">
+              Save
+            </button>
+            <button type="button" className="admin-btn-ghost" onClick={() => setEditing(null)}>
+              Cancel
+            </button>
           </div>
         </form>
       )}
 
       <ul className="mt-6 space-y-3">
-        {list.map((f) => (
+        {list.map((f, index) => (
           <li key={f.id} className="admin-tier-card flex flex-wrap justify-between gap-3">
             <div className="max-w-3xl">
               <h3 className="font-medium text-[var(--admin-text-primary)]">{f.question}</h3>
               <p className="mt-1 text-sm text-[var(--admin-text-secondary)]">{f.answer}</p>
             </div>
-            <div className="flex gap-2">
-              <button type="button" className="admin-btn-accent-outline" onClick={() => setEditing(f)}>Edit</button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={pending || index === 0}
+                className="admin-btn-ghost"
+                onClick={() => {
+                  const ids = list.map((row) => row.id);
+                  const next = [...ids];
+                  [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                  start(async () => {
+                    const res = await reorderFaqs(tab, next);
+                    setMessage(res.ok ? "Order updated" : res.error);
+                  });
+                }}
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                disabled={pending || index === list.length - 1}
+                className="admin-btn-ghost"
+                onClick={() => {
+                  const ids = list.map((row) => row.id);
+                  const next = [...ids];
+                  [next[index + 1], next[index]] = [next[index], next[index + 1]];
+                  start(async () => {
+                    const res = await reorderFaqs(tab, next);
+                    setMessage(res.ok ? "Order updated" : res.error);
+                  });
+                }}
+              >
+                ↓
+              </button>
+              <button type="button" className="admin-btn-accent-outline" onClick={() => setEditing(f)}>
+                Edit
+              </button>
               <button
                 type="button"
                 className="admin-btn-danger-outline"

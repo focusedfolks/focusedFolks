@@ -145,17 +145,32 @@ export async function upsertFaq(input: {
   answer: string;
 }): Promise<ActionResult> {
   try {
+    if (!input.question.trim() || !input.answer.trim()) {
+      return { ok: false, error: "Question and answer are required" };
+    }
     const supabase = await requireAuthedClient();
     const row = {
       page: input.page,
       question: input.question.trim(),
       answer: input.answer.trim(),
     };
-    const { error } = input.id
-      ? await supabase.from("faqs").update(row).eq("id", input.id)
-      : await supabase.from("faqs").insert(row);
-    if (error) return { ok: false, error: error.message };
-    await revalidateAdmin("/admin/faqs", "/", "/pricing", "/contact");
+    if (input.id) {
+      const { error } = await supabase.from("faqs").update(row).eq("id", input.id);
+      if (error) return { ok: false, error: error.message };
+    } else {
+      const { data: existing } = await supabase
+        .from("faqs")
+        .select("sort_order")
+        .eq("page", input.page)
+        .order("sort_order", { ascending: false })
+        .limit(1);
+      const { error } = await supabase.from("faqs").insert({
+        ...row,
+        sort_order: (existing?.[0]?.sort_order ?? -1) + 1,
+      });
+      if (error) return { ok: false, error: error.message };
+    }
+    await revalidateAdmin("/admin/faqs", "/", "/pricing", "/contact", "/services");
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Save failed" };
@@ -167,10 +182,28 @@ export async function deleteFaq(id: string): Promise<ActionResult> {
     const supabase = await requireAuthedClient();
     const { error } = await supabase.from("faqs").delete().eq("id", id);
     if (error) return { ok: false, error: error.message };
-    await revalidateAdmin("/admin/faqs", "/", "/pricing", "/contact");
+    await revalidateAdmin("/admin/faqs", "/", "/pricing", "/contact", "/services");
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Delete failed" };
+  }
+}
+
+export async function reorderFaqs(page: string, orderedIds: string[]): Promise<ActionResult> {
+  try {
+    const supabase = await requireAuthedClient();
+    for (let i = 0; i < orderedIds.length; i++) {
+      const { error } = await supabase
+        .from("faqs")
+        .update({ sort_order: i })
+        .eq("id", orderedIds[i])
+        .eq("page", page);
+      if (error) return { ok: false, error: error.message };
+    }
+    await revalidateAdmin("/admin/faqs", "/", "/pricing", "/contact", "/services");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Reorder failed" };
   }
 }
 
