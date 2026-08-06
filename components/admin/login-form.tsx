@@ -12,7 +12,9 @@ export function AdminLoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(
-    configError ? "Supabase env vars are not configured. Copy .env.local.example → .env.local." : null
+    configError
+      ? "Supabase is not configured. Locally: add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local. On Vercel: Project Settings → Environment Variables (Production), then Redeploy."
+      : null
   );
   const [loading, setLoading] = useState(false);
 
